@@ -41,21 +41,21 @@ function onDataLoaded(dObj) {
         .text("Latitude: " + dObj.location.latitude + " | Longitude: " + dObj.location.longitude)
         .attr("class", "latlon-title");
 
-    // Add the EPW file load button
-    var epw_file_input = main_control.append("input")
-        .attr("id", "epw-file-input")
-        .attr("name", "files")
-        .attr("type", "file");
+    // // Add the EPW file load button
+    // var epw_file_input = main_control.append("input")
+    //     .attr("id", "epw-file-input")
+    //     .attr("name", "files")
+    //     .attr("type", "file");
 
     // Add a listener for when the file changes
     // TODO: rewrite to remove dependance on jQuery
-    $(document).ready(function () { $("#epw-file-input").change(dY.parser.handleSingleEPWFileUpload); });
+    // $(document).ready(function () { $("#epw-file-input").change(dY.parser.handleSingleEPWFileUpload); });
     // epw_file_input.onchange = dY.parser.handleSingleEPWFileUpload;
 
-    document.querySelector('#epw-file-button').addEventListener('click', function (e) {
-        var fileInput = document.querySelector('#epw-file-input');
-        fileInput.click();
-    }, false);
+    // document.querySelector('#epw-file-button').addEventListener('click', function (e) {
+    //     var fileInput = document.querySelector('#epw-file-input');
+    //     fileInput.click();
+    // }, false);
 
     // Add the Main View to the page
     var main_view = main.append("div").attr("id", "main-view");
