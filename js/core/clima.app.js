@@ -5,9 +5,9 @@ var clima = clima || {};
 clima.meta = { name: "clima engine", version: 0.3, build: 28 };
 clima.button = { heatmap: true, sunpath: false, boxplot: false, tufteplot: false };
 
-// --------------------------------------------------------------
+// --------------------
 // DATA STRUCTURE SETUP
-// --------------------------------------------------------------
+// --------------------
 
 // Temp object to store climate data structure
 // TODO: rewrite parser and data structure
@@ -21,7 +21,7 @@ clima.climates.push(dObj);
 
 // Assign the EPW File Button to call the EPW file Input
 $(document).ready(function () {
-    $("#clima-epw-file-input").change(dY.parser.handleSingleEPWFileUpload);
+    $("#clima-epw-file-input").change(clima.loader.loadEPW);
 });
 
 // Assign the EPW File Button to call the EPW file Input
@@ -30,6 +30,12 @@ $(document).ready(function () {
         $("#clima-epw-file-input").click();
     });
 });
+
+
+
+
+
+
 
 
 

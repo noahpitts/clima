@@ -1,25 +1,37 @@
-// global namespace
-var dY = dY || {};
+// Global Namespace
+var clima = clima || {};
+
+// Initialize array to store climate data structures
+clima.climates = clima.climates || [];
+
+// ----------------------------------------
 
 
-dY.Year = function (schema, ticks) {
+
+/* Adapted from Kyle Steinfeld's dY Library
+   https://github.com/ksteinfe/dy_working */
+
+// Constructor function for Climate Data Structure
+clima.data.Year = function (schema, ticks) {
     this.schema = schema;
     this.ticks = ticks;
 }
 
-dY.Year.prototype.metaOf = function (zonekey) {
+// Prototype functions for Climate Data Structure
+
+// TODO: Docs
+clima.data.Year.prototype.metaOf = function (zonekey) {
     if (zonekey.constructor === Array) return this.schema[zonekey[0]][zonekey[1]];
     return this.schema[Object.keys(this.schema)[0]][zonekey];
 };
 
-dY.Year.prototype.valuesOf = function (zonekey) {
+// TODO: Docs
+clima.data.Year.prototype.valuesOf = function (zonekey) {
     return this.ticks.map(function (d) { return d.valueOf(zonekey); });
 };
 
-// this function currently only works with hourly ticks.
-// TODO: modify to work with ticks of any timespan
-// also, move to dY namespace as below
-dY.Year.prototype.dailySummary = function (dayCount = 1) {
+// TODO: Refactor and Docs
+clima.data.Year.prototype.dailySummary = function (dayCount = 1) {
     var slcs = [];
     var t = 0;
     while (t < this.ticks.length) {
@@ -32,7 +44,7 @@ dY.Year.prototype.dailySummary = function (dayCount = 1) {
     return slcs;
 };
 
-
+// TODO: Refactor and Docs
 dY.hourOfDaySummary = function (schema, ticks) {
     var sortedTicks = {};
     for (var t in ticks) {
@@ -51,3 +63,4 @@ dY.hourOfDaySummary = function (schema, ticks) {
     }
     return ret;
 };
+
