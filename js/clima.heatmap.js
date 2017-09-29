@@ -1,8 +1,11 @@
 function drawHeatmap(dObj, view) {
 
-    var board_width = view.node().getBoundingClientRect().width;
+    // var board_width = view.node().getBoundingClientRect().width - 100;
+    var board_width = 1000;
 
+    console.log(board_width);
     // TODO: Refactor This Code
+
     var current_dObj = dObj;
     var dropDownValue = "DryBulbTemp";
     var color1 = "#ffff00";
@@ -66,28 +69,6 @@ function drawHeatmap(dObj, view) {
         .range([d3.rgb(color1), d3.rgb(color2)]);
     var cMap = function (d) { return cScale(cValue(d)); }; // data -> display
 
-
-
-
-    // board.g.append("g")
-    //     .attr({
-    //         class: "x axis",
-    //         transform: "translate(0," + (board.dDims.height + 10) + ")" // move the whole axis down a bit
-    //     })
-    //     .call(xAxis)
-    //     .selectAll(".tick text") // select all the text tags of style tick in the drawn axis
-    //     .style("text-anchor", "start") // it seems D3 likes to set this style inline, so it can't be overridden by the CSS. We need to set here.
-
-    // draw y-axis
-    // board.g.append("g")
-    //     .attr({
-    //         class: "y axis",
-    //         transform: "translate(-10,0)" // move the whole axis to the left a bit
-    //     })
-    //     .call(yAxis)
-
-    // dimension of a single heatmap rectangle
-
     // draw pixels
     board.g.selectAll("rect")
         .data(dObj.ticks)
@@ -119,16 +100,8 @@ function drawHeatmap(dObj, view) {
     d3.selectAll(".x-axis .tick text")
         .attr("transform", "translate(" + (board.dDims.width / 24) + ", -5px)");
 
-
-    // .attr({
-    //     class: "pxl",
-    //     width: pixel_dx,
-    //     height: pixel_dy,
-    //     x: function (d) { return xMap(d); },
-    //     y: function (d) { return yMap(d); },
-    //     // transform: "translate(" + pixel_dx * -0.5 + "," + pixel_dy * -0.5 + ")",
-    //     // fill: d3.rgb(color2)
-    //     // fill: function (d) { return cMap(d); }
-    // });
+    board.g
+        .attr("viewBox", "50 0 " + board_width + " " + board_width / 3)
+        .attr("preserveAspectRatio", "xMidYMax meet");
 
 }
