@@ -1,6 +1,7 @@
 // global namespace
 var clima = clima || {};
 
+clima.data = clima.data || {};
 clima.data.Tick = function (timespan, data) {
     this.ts = timespan;
     this.hourOfYear = timespan.hourOfYear();

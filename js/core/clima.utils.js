@@ -1,6 +1,8 @@
 // Global Namespace
 var clima = clima || {};
-
+clima.utils = clima.utils || {};
+clima.utils.loader = clima.utils.loader || {};
+clima.utils.parser = clima.utils.parser || {};
 /*
 ------------------------------------------------
             Clima Utility Functions
@@ -15,7 +17,7 @@ var clima = clima || {};
 //
 
 // Initial Climate Loader
-clima.utils.loader.loadInitial = function (dataString, climate) {
+clima.utils.loader.loadInitial = function (dataString) {
     var arr;
     splt = dataString.split("\n");
     head = splt.slice(0, 8).join("\n");
@@ -71,7 +73,7 @@ clima.utils.parser.parseEPW = function (head, results, callback) {
 
     // Handle Parsed Fields
     schema = { EPW: {} };
-    clima.utils.parser.EPWDataFields.forEach(function (keyDef) {
+    clima.utils.EPWDataFields.forEach(function (keyDef) {
         schema["EPW"][keyDef.key] = {};
     });
 
@@ -94,7 +96,7 @@ clima.utils.parser.parseEPW = function (head, results, callback) {
             value = row[field.col];
             data["EPW"][field.key] = value;
         });
-        ticks.push(new clima.Tick(timespan, data));
+        ticks.push(new clima.data.Tick(timespan, data));
 
     });
 
@@ -166,8 +168,8 @@ clima.utils.parser.parseEPWHeader = function (yr, headString) {
         var type = headTypExtrmPeriods[p + 1].toLowerCase();
         if (!yr.epwhead.periods.hasOwnProperty(type)) yr.epwhead.periods[type] = []
         var hrDomain = [
-            dY.dt.dateToHourOfYear(Date.parse(headTypExtrmPeriods[p + 2] + "/" + dY.dt.year + " 00:30:00 UTC")),
-            dY.dt.dateToHourOfYear(Date.parse(headTypExtrmPeriods[p + 3] + "/" + dY.dt.year + " 23:30:00 UTC"))
+            clima.utils.datetime.dateToHourOfYear(Date.parse(headTypExtrmPeriods[p + 2] + "/" + clima.utils.datetime.year + " 00:30:00 UTC")),
+            clima.utils.datetime.dateToHourOfYear(Date.parse(headTypExtrmPeriods[p + 3] + "/" + clima.utils.datetime.year + " 23:30:00 UTC"))
         ]
         yr.epwhead.periods[type].push({
             name: headTypExtrmPeriods[p],

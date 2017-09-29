@@ -9,11 +9,14 @@ clima.button = { heatmap: true, sunpath: false, boxplot: false, tufteplot: false
 // DATA STRUCTURE SETUP
 // --------------------
 
+// Initialize array to store climate data structures
+clima.climates = clima.climates || [];
+
 // Temp object to store climate data structure
 // TODO: rewrite parser and data structure
 var dObj = false;
-loadInitialClimateData(initialClimateDataString);
-clima.climates.push(dObj);
+clima.utils.loader.loadInitial(oaklandCa);
+
 
 // --------------------------------------------------------------
 // CONTROL SETUP
@@ -21,7 +24,7 @@ clima.climates.push(dObj);
 
 // Assign the EPW File Button to call the EPW file Input
 $(document).ready(function () {
-    $("#clima-epw-file-input").change(clima.loader.loadEPW);
+    $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
 });
 
 // Assign the EPW File Button to call the EPW file Input
@@ -72,7 +75,7 @@ function onDataLoaded(dObj) {
             // Turn it on...
             heatmap_button.attr("class", "control-button active-button");
             var heatmap_view = main_view.append("div").attr("id", "heatmap-view");
-            drawHeatmap(dObj, heatmap_view);
+            drawHeatmap(clima.climate[0], heatmap_view);
             clima.button.heatmap = true;
         }
     }
@@ -148,7 +151,7 @@ function onDataLoaded(dObj) {
     if (clima.button.heatmap) {
         heatmap_button.attr("class", "control-button active-button");
         var heatmap_view = main_view.append("div").attr("id", "heatmap-view");
-        drawHeatmap(dObj, heatmap_view);
+        drawHeatmap(clima.climate[0], heatmap_view);
     }
     if (clima.button.sunpath) {
         sunpath_button.attr("class", "control-button active-button");

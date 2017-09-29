@@ -1,3 +1,6 @@
+// global namespace
+var clima = clima || {};
+
 function drawSunpath(dObj, view) {
     view.append("p").text("SUNPATH!!!");
 

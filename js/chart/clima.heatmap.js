@@ -1,3 +1,6 @@
+// global namespace
+var clima = clima || {};
+
 function drawHeatmap(dObj, view) {
 
     // var board_width = view.node().getBoundingClientRect().width - 100;

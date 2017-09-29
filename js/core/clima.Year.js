@@ -1,12 +1,6 @@
 // Global Namespace
 var clima = clima || {};
-
-// Initialize array to store climate data structures
-clima.climates = clima.climates || [];
-
-// ----------------------------------------
-
-
+clima.data = clima.data || {};
 
 /* Adapted from Kyle Steinfeld's dY Library
    https://github.com/ksteinfe/dy_working */
@@ -45,7 +39,7 @@ clima.data.Year.prototype.dailySummary = function (dayCount = 1) {
 };
 
 // TODO: Refactor and Docs
-dY.hourOfDaySummary = function (schema, ticks) {
+clima.data.hourOfDaySummary = function (schema, ticks) {
     var sortedTicks = {};
     for (var t in ticks) {
         var h = ticks[t].hourOfDay();

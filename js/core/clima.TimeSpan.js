@@ -1,5 +1,7 @@
-// TimeSpan Class
+// global namespace
+var clima = clima || {};
 
+// TimeSpan Class
 clima.TimeSpan = function (start, end) {
     // can be given Dates or minutes of year
     // given dates should be in UTC and in year 1970

@@ -1,3 +1,6 @@
+// global namespace
+var clima = clima || {};
+
 function iqr(k) {
     return function (d, i) {
         var q1 = d.quartiles[0],
