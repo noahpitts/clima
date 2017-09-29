@@ -118,7 +118,10 @@ clima.utils.parser.parseEPW = function (head, results, callback) {
 
 clima.utils.onDataLoaded = function (dObj) {
     if (!clima.climates) clima.climates = [];
+    clima.currentClimate = dObj;
     clima.climates.push(dObj);
+
+    // onDataLoaded(clima.climates[0]);
 }
 
 // EPW File Header Parser

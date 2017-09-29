@@ -92,6 +92,11 @@
             <a class="nav-link disabled" href="#">Disabled</a>
           </li>
         </ul>
+        <!-- Add ViewPort -->
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" id="add-viewport-button">Add Viewport</button>
+        <!-- Edit Display -->
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
+        <!-- Load Climate Button -->
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Load Climate Data</button>
       </div>
     </nav>
@@ -99,11 +104,15 @@
 
   <!-- Main Page Container -->
   <div class="container" id="main">
+    <div class="container" id="heatmap-view">
+    </div>
   </div>
 
   <!--Load Initial Data-->
   <script>
-    onDataLoaded(clima.climates[0]);
+    $(document).ready(function () {
+      onDataLoaded(clima.climates[0]);
+    });
   </script>
 
 
@@ -133,28 +142,31 @@
         </div>
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Load</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Load</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Edit Dialog Modal -->
-  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="displayEditorModal" tabindex="-1" role="dialog" aria-labelledby="displayEditorModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalLabel">Modal title</h3>
+          <h3 class="modal-title" id="exampleModalLabel">Display Editor</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         </div>
         <div class="modal-body">
-          ...
+          <div class="container" id="editor-viewport">
+
+          </div>
+          <button type="button" class="btn btn-outline-secondary">TODO:Some type of Display Controller</button>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Apply</button>
         </div>
       </div>
     </div>
