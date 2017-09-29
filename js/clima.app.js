@@ -1,16 +1,19 @@
-/* Utility Functions for setting up the controls in the application */
+// Global Namespace
+var clima = clima || {};
 
-// Namespace for clima available in global frame, name and version meta data
-var clima = {
-    meta: { name: "clima engine", version: 0.3, build: 28 },
-    button: { heatmap: true, sunpath: false, boxplot: false, tufteplot: false }
-};
+// Clima application meta data
+clima.meta = { name: "clima engine", version: 0.3, build: 28 };
+clima.button = { heatmap: true, sunpath: false, boxplot: false, tufteplot: false };
+
 // --------------------------------------------------------------
 // DATA STRUCTURE SETUP
 // --------------------------------------------------------------
 
-// Initialize array to store climate data structures
-clima.climates = [];
+// Temp object to store climate data structure
+// TODO: rewrite parser and data structure
+var dObj = false;
+loadInitialClimateData(initialClimateDataString);
+clima.climates.push(dObj);
 
 // --------------------------------------------------------------
 // CONTROL SETUP
@@ -37,52 +40,8 @@ function onDataLoaded(dObj) {
     // remove all content from the page before rebuilding
     main.selectAll("div").remove();
 
-    // // Add the Main Title to the Page
-    // var main_title = main.append("div").attr("id", "main-title");
-
-    // // Add the title name
-    // main_title.append("h3")
-    //     .text(clima.meta.name)
-    //     .attr("class", "title");
-
-    // // Add the version
-    // main_title.append("h6")
-    //     .text("alpha v" + clima.meta.version + " build " + clima.meta.build)
-    //     .attr("class", "title");
-
-    // var epw_file_button = main_title.append("button")
-    //     .attr("class", "control-button")
-    //     .attr("id", "epw-file-button")
-    //     .text("Load EPW File");
-
     // Add the Main Control to the Page
     var main_control = main.append("div").attr("id", "main-control");
-
-    // // Add the location name
-    // main_control.append("h1")
-    //     .text(dObj.location.city + ", " + dObj.location.country) // EPW Metadata
-    //     .attr("class", "climate-title");
-
-    // // Add the location lat/lon
-    // main_control.append("h5")
-    //     .text("Latitude: " + dObj.location.latitude + " | Longitude: " + dObj.location.longitude)
-    //     .attr("class", "latlon-title");
-
-    // // Add the EPW file load button
-    // var epw_file_input = main_control.append("input")
-    //     .attr("id", "epw-file-input")
-    //     .attr("name", "files")
-    //     .attr("type", "file");
-
-    // Add a listener for when the file changes
-    // TODO: rewrite to remove dependance on jQuery
-    // $(document).ready(function () { $("#epw-file-input").change(dY.parser.handleSingleEPWFileUpload); });
-    // // epw_file_input.onchange = dY.parser.handleSingleEPWFileUpload;
-
-    // document.querySelector('#clima-epw-file-button').addEventListener('click', function (e) {
-    //     var fileInput = document.querySelector('#clima-epw-file-input');
-    //     fileInput.click();
-    // }, false);
 
     // Add the Main View to the page
     var main_view = main.append("div").attr("id", "main-view");

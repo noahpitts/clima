@@ -41,10 +41,21 @@
   <!-- D3 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.min.js"></script>
 
+  <!-- dY -->
+  <script src="./js/dy/dy_arr.js"></script>
+  <script src="./js/dy/dy_datetime.js"></script>
+  <script src="./js/dy/dy_graph.js"></script>
+  <script src="./js/dy/dy_parse.js"></script>
+  <script src="./js/dy/dy_solar.js"></script>
+  <script src="./js/dy/dy_tick.js"></script>
+  <script src="./js/dy/dy_util.js"></script>
+  <script src="./js/dy/papaparse.min.js"></script>
+
   <!-- Clima -->
-  <script src="./js/dy.v0.min.js"></script>
+  <script src="./js/clima.oakland.js"></script>
   <script src="./js/clima.data.js"></script>
   <script src="./js/clima.app.js"></script>
+
   <script src="./js/clima.heatmap.js"></script>
   <script src="./js/clima.sunpath.js"></script>
   <script src="./js/clima.boxplot.js"></script>
@@ -87,7 +98,7 @@
 
   <!--Load Initial Data-->
   <script>
-    onDataLoaded(dObj);
+    onDataLoaded(clima.climates[0]);
   </script>
 
 
