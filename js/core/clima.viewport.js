@@ -22,7 +22,7 @@ class Viewport {
 
         // Create this HTML element
         this.element = parent.append("div")
-            .attr("class", "container-fluid viewport")
+            .attr("class", "container viewport")
             .attr("id", "vp_" + this.id);
 
         // Store link to viewport climate data

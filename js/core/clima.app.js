@@ -68,6 +68,10 @@ clima.clearAllViewports = function () {
 clima.selectViewport = function (vp) {
     clima.viewport.selection = vp;
     // TODO: Add CSS changes here
+    d3.selectAll(".viewport").classed("viewport-select", false);
+    if (vp) {
+        clima.viewport.selection.element.classed("viewport-select", true);
+    }
 }
 
 // Opens Viewports editor for adding new Viewport
@@ -77,12 +81,22 @@ clima.addViewport = function () {
 
 }
 
+// Opens Viewports editor for editing exisiting Viewport
+clima.editViewport = function () {
+    Viewport.sync(clima.viewport.selection, clima.editor.viewport);
+    clima.editor.viewport.drawEditorControls();
+}
+
 // Syncs Editor viewport with main Viewport
 clima.applyViewport = function () {
     // If adding a new Viewport
     if (!clima.viewport.selection) {
         // Create new viewport object
         var vp = new Viewport(clima.main.element, false);
+        vp.element.on("click", function () {
+            clima.selectViewport(vp);
+        });
+
         // Push to Viewport stack
         clima.main.viewports.push(vp);
         // Set new viewport as current selection
@@ -110,7 +124,9 @@ function onDataLoaded(dObj) {
     clima.editor.titleElement = d3.select("#editor-title");
     clima.editor.viewportElement = d3.select("#editor-viewport");
     clima.editor.controlportElement = d3.select("#editor-controlport");
+
     clima.editor.viewport = new Viewport(clima.editor.viewportElement, clima.currentClimate)
+    clima.editor.viewport.element.classed("viewport", false);
 
     console.log("here");
     //initialSetup();

@@ -33,7 +33,7 @@ function drawHeatmap(dObj, view) {
         .attr("width", boardWidth)
         .attr("height", boardHeight)
         .attr("viewBox", "0 0 " + boardWidth + " " + boardHeight)
-        .attr("preserveAspectRatio", "xMidYMax meet")
+        .attr("preserveAspectRatio", "xMidYMid meet")
         ;
 
     board.g = board.append("g")

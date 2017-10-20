@@ -106,18 +106,23 @@
 
         <!-- Edit Viewport Button -->
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
+        <script>
+          $(document).ready(function () {
+            $("#edit-display-button").click(clima.editViewport);
+          });
+        </script>
 
         <!-- Load Climate Button -->
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Load Climate Data</button>
         <script>
-          $(document).ready(function () {
-            $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
-          });
-          $(document).ready(function () {
-            $("#clima-epw-file-button").click(function () {
-              $("#clima-epw-file-input").click();
+            $(document).ready(function () {
+              $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
             });
-          });
+            $(document).ready(function () {
+              $("#clima-epw-file-button").click(function () {
+                $("#clima-epw-file-input").click();
+              });
+            });
         </script>
       </div>
     </nav>

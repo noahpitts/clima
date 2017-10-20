@@ -27,12 +27,41 @@ body {
   padding-top: 5.0rem;
 }
 
-/* .viewport {
-  max-width: 1000px;
-  margin: auto;
-} */
+.viewport {
+  display: inline-block;
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 0.5px solid transparent;
+  padding: 0.75rem 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.25;
+  border-radius: 0.25rem;
+  transition: all 0.05s ease-in-out;
+}
 
-.viewport svg {
+.viewport:hover {
+  color: #868e96;
+  background-color: transparent;
+  background-image: none;
+  border-color: #868e96;
+}
+
+.viewport-select, .viewport-select:hover {
+  color: #007bff;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid #007bff;
+}
+
+svg {
   width: 100%;
   height: auto;
 }
