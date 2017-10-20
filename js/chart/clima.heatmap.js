@@ -13,17 +13,11 @@ clima.chart.HeatMap = function (data) {
 }
 // --------------------------------------
 
-function drawHeatmap(dObj, view, width) {
+function drawHeatmap(dObj, view) {
 
-    var viewWidth = view.node().getBoundingClientRect().width;
-
-    if (width) viewWidth = width;
-    console.log(viewWidth);
-
-    var aspectRatio = 400 / 1500;
-    var boardWidth = viewWidth;
-    var boardHeight = viewWidth * aspectRatio;
-    var boardMargin = 0.05 * viewWidth;
+    var boardWidth = 1000;
+    var boardHeight = 300;
+    var boardMargin = 40;
 
     var drawWidth = boardWidth - 2 * boardMargin;
     var drawHeight = boardHeight - 2 * boardMargin;
@@ -38,15 +32,12 @@ function drawHeatmap(dObj, view, width) {
         .attr("class", "board")
         .attr("width", boardWidth)
         .attr("height", boardHeight)
-        // .attr("viewBox", "0 0 " + viewWidth + " " + viewWidth * aspectRatio)
-        // .attr("preserveAspectRatio", "xMidYMax meet")
+        .attr("viewBox", "0 0 " + boardWidth + " " + boardHeight)
+        .attr("preserveAspectRatio", "xMidYMax meet")
         ;
 
     board.g = board.append("g")
-        .attr("transform", "translate(" + boardMargin + "," + boardMargin + ")")
-        // .attr("viewBox", "0 0 " + boardWidth + " " + boardHeight)
-        // .attr("preserveAspectRatio", "xMidYMax meet")
-        ;
+        .attr("transform", "translate(" + boardMargin + "," + boardMargin + ")");
 
     // Setup X
     //

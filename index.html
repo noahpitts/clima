@@ -57,6 +57,7 @@
   <script src="./js/core/clima.Year.js"></script>
   <script src="./js/core/clima.utils.js"></script>
   <script src="./js/core/clima.TimeSpan.js"></script>
+  <script src="./js/core/clima.viewport.js"></script>
 
   <!-- Clima Chart -->
   <script src="./js/chart/clima.heatmap.js"></script>
@@ -94,12 +95,30 @@
             <a class="nav-link disabled" href="#">Disabled</a>
           </li>
         </ul>
-        <!-- Add ViewPort -->
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" id="add-viewport-button">Add Viewport</button>
-        <!-- Edit Display -->
+
+        <!-- Add ViewPort Button-->
+        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="add-viewport-button" data-target="#displayEditorModal">Add Viewport</button>
+        <script>
+          $(document).ready(function () {
+            $("#add-viewport-button").click(clima.addViewport);
+          });
+        </script>
+
+        <!-- Edit Viewport Button -->
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
+
         <!-- Load Climate Button -->
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Load Climate Data</button>
+        <script>
+          $(document).ready(function () {
+            $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
+          });
+          $(document).ready(function () {
+            $("#clima-epw-file-button").click(function () {
+              $("#clima-epw-file-input").click();
+            });
+          });
+        </script>
       </div>
     </nav>
   </div>
@@ -110,15 +129,10 @@
 
   <!--Load Initial Data-->
   <script>
-    $(document).ready(function () {
-      onDataLoaded(clima.climates[0]);
-    });
+          $(document).ready(function () {
+            onDataLoaded(clima.climates[0]);
+          });
   </script>
-
-
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary">
-    Launch demo modal</button>
 
   <!-- Load Climate Data Modal -->
   <div class="modal fade" id="loadEPWDataModal" tabindex="-1" role="dialog" aria-labelledby="loadEPWDataModalLabel" aria-hidden="true">
@@ -148,25 +162,38 @@
     </div>
   </div>
 
-  <!-- Edit Dialog Modal -->
+  <!-- Editor Modal -->
   <div class="modal fade" id="displayEditorModal" tabindex="-1" role="dialog" aria-labelledby="displayEditorModal" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
 
+        <!-- Header -->
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalLabel">Display Editor</h3>
+          <h3 class="modal-title" id="editor-title">Viewport Editor</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <div class="container" id="editor-viewport">
 
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Editor viewport -->
+          <div class="container" id="editor-viewport"></div>
+          <!-- Editor controlport -->
+          <div class="container" id="editor-controlport">
+            <!-- TODO: Add Editor Controls Here -->
           </div>
-          <button type="button" class="btn btn-outline-secondary">TODO:Some type of Display Controller</button>
         </div>
+
+        <!-- Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Apply</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="editor-apply-button">Apply</button>
+          <script>
+            $(document).ready(function () {
+              $("#editor-apply-button").click(clima.applyViewport);
+            });
+          </script>
+
         </div>
       </div>
     </div>

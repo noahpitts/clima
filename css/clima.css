@@ -22,3 +22,32 @@ body {
   width: 0;
   height: 0;
 }
+
+.controls {
+  padding-top: 5.0rem;
+}
+
+/* .viewport {
+  max-width: 1000px;
+  margin: auto;
+} */
+
+.viewport svg {
+  width: 100%;
+  height: auto;
+}
+
+
+ /* Modal Sizing for Large Screens */
+@media (min-width: 1200px) {
+  .modal-lg {
+    max-width: 1000px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .modal-lg {
+    max-width: 1200px;
+  }
+}
+
