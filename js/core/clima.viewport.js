@@ -31,6 +31,8 @@ class Viewport {
         } else {
             this.data = clima.currentClimate;
         }
+
+        // CONSIDER ADDING SVG INNER HTML DIRECTLY HERE TO OPTIMIZE
     }
 
     // Draws the Viewport Graphics
