@@ -44,8 +44,8 @@ class Viewport {
         if (!this.data) this.data = clima.currentClimate;
 
         var w = this.element.node().getBoundingClientRect().width
-        console.log("this is the width: " + w);
-        drawHeatmap(this.data, this.element);
+        // console.log("this is the width: " + w);
+        // drawHeatmap(this.data, this.element);
     }
 
     // Draws The Editor Controls

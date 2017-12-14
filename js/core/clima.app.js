@@ -35,7 +35,8 @@ clima.editor = clima.editor || {};
 
 
 // clima.editor.viewport = new Viewport(clima.editor.viewportElement, clima.currentClimate)
-
+clima.testChart = 0;
+clima.testViewport = 0;
 
 
 
@@ -129,6 +130,18 @@ function onDataLoaded(dObj) {
     clima.editor.viewport.element.classed("viewport", false);
 
     console.log("here");
+
+    // FOR TESTING
+    clima.testViewport = clima.main.element.append("div");
+    clima.testChart = new Heatmap(dObj);
+    clima.testChart.drawChart(clima.testViewport);
+
+
+
+
+
+
+
     //initialSetup();
     // var heatmap_view = main_view.append("div")
     // .attr("id", "heatmap-view");
