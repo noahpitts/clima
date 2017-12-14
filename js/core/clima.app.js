@@ -136,6 +136,10 @@ function onDataLoaded(dObj) {
     clima.testChart = new Heatmap(dObj);
     clima.testChart.drawChart(clima.testViewport);
 
+    clima.testViewportTWO = clima.main.element.append("div");
+    clima.testChartTWO = new Tufteplot(dObj);
+    clima.testChartTWO.drawChart(clima.testViewportTWO);
+
 
 
 

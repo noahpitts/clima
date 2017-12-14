@@ -46,6 +46,10 @@ class Viewport {
         var w = this.element.node().getBoundingClientRect().width
         // console.log("this is the width: " + w);
         // drawHeatmap(this.data, this.element);
+
+        var c = new Heatmap(this.data);
+        c.drawChart(this.element);
+
     }
 
     // Draws The Editor Controls
