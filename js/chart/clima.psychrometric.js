@@ -7,7 +7,7 @@ class Psychrometric {
 
         // Board Dims for Unscaled SVG
         this.boardWidth = 1200;
-        this.boardHeight = 400;
+        this.boardHeight = 600;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
