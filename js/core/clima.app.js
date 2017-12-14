@@ -140,6 +140,10 @@ function onDataLoaded(dObj) {
     clima.testChartTWO = new Tufteplot(dObj);
     clima.testChartTWO.drawChart(clima.testViewportTWO);
 
+    clima.testViewportTHREE = clima.main.element.append("div");
+    clima.testChartTHREE = new Scatterplot(dObj);
+    clima.testChartTHREE.drawChart(clima.testViewportTHREE);
+
 
 
 

@@ -8,7 +8,7 @@ class Tufteplot {
 
         // Board Dims for Unscaled SVG
         this.boardWidth = 1200;
-        this.boardHeight = 300;
+        this.boardHeight = 400;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
@@ -214,14 +214,14 @@ class Tufteplot {
 
     // Draws y-Axis to the yAxis group of the SVG
     drawYAxis() {
-
+        var col = this.field;
         var yScale = d3.scaleLinear()
-            .domain([23, 0])
-            .range([0, this.graphicHeight]);
+        .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
+        .range([0, this.graphicHeight]);
 
         var yAxis = d3.axisLeft()
             .scale(yScale)
-            .tickValues([0, 6, 12, 18, 23]);
+            .ticks(4);
 
         this.board.yAxis.call(yAxis);
     }
