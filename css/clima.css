@@ -80,3 +80,47 @@ svg {
   }
 }
 
+/* TODO: CUT OUT BLOXPLOT BULLSHIT */
+
+.boxplot-board {
+  font: 10px sans-serif;
+}
+
+.boxplot-board line,
+.boxplot-board rect,
+.boxplot-board circle {
+  fill: white;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.boxplot-board .center {
+  stroke-dasharray: 3, 3;
+}
+
+.boxplot-board .outlier {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+
+.axisNew {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+

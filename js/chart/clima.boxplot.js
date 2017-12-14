@@ -250,7 +250,7 @@ function drawBoxplot(dObj, view) {
     var margin = { top: 40, right: 80, bottom: 50, left: 40 };
     // var width = radius * 3.5 - margin.left - margin.right;
     var width = 1000;
-    var height = 500;
+    var height = 400;
 
     // var height = 600 - margin.top - margin.bottom;
 
@@ -442,7 +442,7 @@ function drawBoxplot(dObj, view) {
     
     var board = view
         .append("svg")
-        .attr("class", "board")
+        .attr("class", "boxplot-board")
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", "0 0 " + width + " " + height)
@@ -483,7 +483,7 @@ function drawBoxplot(dObj, view) {
         .attr("text-anchor", "middle")
         .style("font-size", "18px")
         //.style("text-decoration", "underline")
-        .text("BOXPLOT v1 - Dry Bulb Temp hardcoded - TODO: port to d3v4");
+        .text("BOXPLOT: update title  TODO: FIX VIEWPORT RENDER DIMS");
 
     // draw y axis
     board.g.append("g")
