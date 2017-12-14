@@ -170,7 +170,7 @@ class Heatmap {
         var yScale = d3.scaleLinear()
             .domain([0, 23])
             .range([0, this.graphicHeight]);
-        var yMap = function(d, i) { return yScale(i); };
+        var yMap = function (d, i) { return yScale(i); };
 
         // Color Scale
         var cScale = d3.scaleLinear()
@@ -200,11 +200,11 @@ class Heatmap {
         var yAxis = d3.axisRight()
             .scale(fScale)
             .ticks(6)
-            .tickValues([fieldData.min,fieldData.average,fieldData.max]);
+            .tickValues([fieldData.min, fieldData.average, fieldData.max]);
 
         this.board.legend.axis = this.board.legend.append("g")
             .attr("transform", "translate(" + (legendXOffset + legendRectWidth + 6) + ",0)");
-        
+
         this.board.legend.axis.call(yAxis);
     }
 
@@ -221,7 +221,7 @@ class Heatmap {
         this.board.title.append("text")
             .attr("x", this.boardWidth / 2)
             .attr("y", this.boardTopMargin / 2)
-            .text( textData )
+            .text(textData)
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
             .attr("font-size", "20px")

@@ -129,7 +129,7 @@ function onDataLoaded(dObj) {
     clima.editor.viewport = new Viewport(clima.editor.viewportElement, clima.currentClimate)
     clima.editor.viewport.element.classed("viewport", false);
 
-    console.log("here");
+    // console.log("here");
 
     // FOR TESTING
     clima.testViewport = clima.main.element.append("div");
@@ -144,8 +144,9 @@ function onDataLoaded(dObj) {
     clima.testChartTHREE = new Scatterplot(dObj);
     clima.testChartTHREE.drawChart(clima.testViewportTHREE);
 
-
-
+    // BOXPLOT - TODO
+    clima.testViewportFOUR = clima.main.element.append("div");
+    drawBoxplot(dObj, clima.testViewportFOUR);
 
 
 

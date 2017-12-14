@@ -244,13 +244,13 @@ var labels = false; // show the text labels beside individual boxplots?
 })();
 
 function drawBoxplot(dObj, view) {
-    view.append("p").text("BOXPLOT!!!");
+    // view.append("p").text("BOXPLOT!!!");
 
 
-    var margin = { top: 30, right: 50, bottom: 70, left: 50 };
+    var margin = { top: 40, right: 80, bottom: 50, left: 40 };
     // var width = radius * 3.5 - margin.left - margin.right;
-    var width = view.node().getBoundingClientRect().width;
-    var height = width / 2;
+    var width = 1000;
+    var height = 500;
 
     // var height = 600 - margin.top - margin.bottom;
 
@@ -438,7 +438,18 @@ function drawBoxplot(dObj, view) {
     //     .append("g")
     //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    board = dY.graph.addBoard("#boxplot-view", { inWidth: width, inHeight: height, margin: 50 });
+    // board = dY.graph.addBoard("#boxplot-view", { inWidth: width, inHeight: height, margin: 50 });
+    
+    var board = view
+        .append("svg")
+        .attr("class", "board")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .attr("preserveAspectRatio", "xMidYMid meet");
+    
+    board.g = board.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // the x-axis
     var x = d3.scaleBand()
