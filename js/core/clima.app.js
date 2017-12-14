@@ -144,6 +144,10 @@ function onDataLoaded(dObj) {
     clima.testChartTHREE = new Scatterplot(dObj);
     clima.testChartTHREE.drawChart(clima.testViewportTHREE);
 
+    clima.testViewportFIVE = clima.main.element.append("div");
+    clima.testChartFIVE = new Psychrometric(dObj);
+    clima.testChartFIVE.drawChart(clima.testViewportFIVE);
+
     // BOXPLOT - TODO
     clima.testViewportFOUR = clima.main.element.append("div");
     drawBoxplot(dObj, clima.testViewportFOUR);
