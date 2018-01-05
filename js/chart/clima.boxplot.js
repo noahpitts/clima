@@ -439,7 +439,7 @@ function drawBoxplot(dObj, view) {
     //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // board = dY.graph.addBoard("#boxplot-view", { inWidth: width, inHeight: height, margin: 50 });
-    
+
     var board = view
         .append("svg")
         .attr("class", "boxplot-board")
@@ -447,7 +447,7 @@ function drawBoxplot(dObj, view) {
         .attr("height", height)
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("preserveAspectRatio", "xMidYMid meet");
-    
+
     board.g = board.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
