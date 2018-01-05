@@ -67,11 +67,19 @@ clima.clearAllViewports = function () {
 
 // set current viewport selection
 clima.selectViewport = function (vp) {
-    clima.viewport.selection = vp;
-    // TODO: Add CSS changes here
-    d3.selectAll(".viewport").classed("viewport-select", false);
-    if (vp) {
-        clima.viewport.selection.element.classed("viewport-select", true);
+    // If viewport is already selected, then deselect it
+    if (vp === clima.viewport.selection) {
+        clima.viewport.selection = false;
+        d3.selectAll(".viewport").classed("viewport-select", false);
+    }
+    // Otherwise select it
+    else {
+        clima.viewport.selection = vp;
+        // TODO: Add CSS changes here
+        d3.selectAll(".viewport").classed("viewport-select", false);
+        if (vp) {
+            clima.viewport.selection.element.classed("viewport-select", true);
+        }
     }
 }
 
@@ -151,7 +159,7 @@ function onDataLoaded(dObj) {
     // // BOXPLOT - TODO
     // clima.testViewportFOUR = clima.main.element.append("div");
     // drawBoxplot(dObj, clima.testViewportFOUR);
-    
+
     //initialSetup();
     // var heatmap_view = main_view.append("div")
     // .attr("id", "heatmap-view");

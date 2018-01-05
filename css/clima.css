@@ -44,14 +44,14 @@ body {
   font-size: 1rem;
   line-height: 1.25;
   border-radius: 0.25rem;
-  transition: all 0.05s ease-in-out;
+  transition: all 0.03s ease-in-out;
 }
 
 .viewport:hover {
-  color: #868e96;
+  color: #a8afb6;
   background-color: transparent;
   background-image: none;
-  border-color: #868e96;
+  border-color: #a8afb6;
 }
 
 .viewport-select, .viewport-select:hover {
