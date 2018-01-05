@@ -109,17 +109,7 @@
         </script>
 
         <!-- Load Climate Button -->
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Load Climate Data</button>
-        <script>
-          $(document).ready(function () {
-            $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
-          });
-          $(document).ready(function () {
-            $("#clima-epw-file-button").click(function () {
-              $("#clima-epw-file-input").click();
-            });
-          });
-        </script>
+        <button type="button" id="climate-data-button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Climate Data</button>
       </div>
     </nav>
   </div>
@@ -141,76 +131,94 @@
       <div class="modal-content">
         <!-- Modal Header -->
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalLabel">Load EPW Data</h3>
+          <h3 class="modal-title" id="exampleModalLabel">Climate Data</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <!-- Modal Body -->
         <div class="modal-body">
-          <!-- Map View -->
-          <div class="container" id="world-map-container"></div>
-          <div class="container">
-            <!-- Load EPW Input -->
-            <button type="button" class="btn btn-primary" id="clima-epw-file-button">Load EPW File</button>
-            <!-- Load EPW Input -->
-            <input class="btn input-group input-group-addon btn-outline-primary" id="clima-epw-file-input" name="files" type="file">
+          <!-- Climate Map View -->
+          <div class="container" id="world-map-container">
+            <svg id="world-map"></svg>
           </div>
+          <!-- Create World Map -->
+          <script>
+            clima.worldMap = {};
+            clima.worldMap.width = 960;
+            clima.worldMap.height = 540;
+
+            clima.worldMap.svg = d3.select("#world-map")
+
+            clima.worldMap.svg
+              .attr("width", clima.worldMap.width)
+              .attr("height", clima.worldMap.height)
+              .attr("viewBox", "0 0 " + clima.worldMap.width + " " + clima.worldMap.height)
+              .attr("preserveAspectRatio", "xMidYMid meet");;
+
+            clima.worldMap.projection = d3.geoRobinson()
+              .scale(150)
+              .translate([clima.worldMap.width / 2, clima.worldMap.height / 2])
+              .precision(0.1);
+
+            clima.worldMap.path = d3.geoPath()
+              .projection(clima.worldMap.projection);
+
+            clima.worldMap.svg.append("path")
+              .datum(d3.geoGraticule10())
+              .attr("class", "geo-graticule")
+              .attr("d", clima.worldMap.path);
+
+            clima.worldMap.svg.append("path")
+              .datum({ type: "Sphere" })
+              .attr("class", "geo-sphere")
+              .attr("d", clima.worldMap.path);
+
+            d3.json("https://noahpitts.github.io/clima/js/data/world.json", function (error, world) {
+              if (error) throw error;
+
+              clima.worldMap.svg.insert("path", ".geo-graticule")
+                .datum(topojson.feature(world, world.objects.land))
+                .attr("class", "geo-land")
+                .attr("d", clima.worldMap.path);
+
+              clima.worldMap.svg.insert("path", ".geo-graticule")
+                .datum(topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; }))
+                .attr("class", "geo-boundary")
+                .attr("d", clima.worldMap.path);
+            });
+          </script>
+
+          <!-- Climate List View -->
+          <div class="container" id="climate-list-container">
+            <ul class="list-group" id="climate-list">
+            </ul>
+          </div>
+
         </div>
         <!-- Modal Footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">Load</button>
+          <!-- Load EPW Input -->
+          <button type="button" class="btn btn-primary" id="clima-epw-file-button">Load EPW File</button>
+          <!-- Load EPW Input -->
+          <input class="btn input-group input-group-addon btn-outline-primary" id="clima-epw-file-input" name="files" type="file">
         </div>
+        <script>
+          $(document).ready(function () {
+            $("#climate-data-button").click(clima.utils.mapClimateData);
+          });
+          $(document).ready(function () {
+            $("#clima-epw-file-input").change(clima.utils.loader.loadEPW);
+          });
+          $(document).ready(function () {
+            $("#clima-epw-file-button").click(function () {
+              $("#clima-epw-file-input").click();
+            });
+          });
+        </script>
       </div>
     </div>
   </div>
-
-  <!-- Create the world Map -->
-  <script>
-    clima.worldMap = {};
-    clima.worldMap.width = 960;
-    clima.worldMap.height = 540;
-
-    clima.worldMap.svg = d3.select("#world-map-container")
-      .append("svg")
-      .attr("class", "world-map")
-      .attr("width", clima.worldMap.width)
-      .attr("height", clima.worldMap.height)
-      .attr("viewBox", "0 0 " + clima.worldMap.width + " " + clima.worldMap.height)
-      .attr("preserveAspectRatio", "xMidYMid meet");;
-
-    clima.worldMap.projection = d3.geoRobinson()
-      .scale(150)
-      .translate([clima.worldMap.width / 2, clima.worldMap.height / 2])
-      .precision(0.1);
-
-    clima.worldMap.path = d3.geoPath()
-      .projection(clima.worldMap.projection);
-
-    clima.worldMap.svg.append("path")
-      .datum(d3.geoGraticule10())
-      .attr("class", "geo-graticule")
-      .attr("d", clima.worldMap.path);
-
-    clima.worldMap.svg.append("path")
-      .datum({ type: "Sphere" })
-      .attr("class", "geo-sphere")
-      .attr("d", clima.worldMap.path);
-
-    d3.json("./js/data/world.json", function (error, world) {
-      if (error) throw error;
-
-      clima.worldMap.svg.insert("path", ".geo-graticule")
-        .datum(topojson.feature(world, world.objects.land))
-        .attr("class", "geo-land")
-        .attr("d", clima.worldMap.path);
-
-      clima.worldMap.svg.insert("path", ".geo-graticule")
-        .datum(topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; }))
-        .attr("class", "geo-boundary")
-        .attr("d", clima.worldMap.path);
-    });
-  </script>
 
   <!-- Editor Modal -->
   <div class="modal fade" id="displayEditorModal" tabindex="-1" role="dialog" aria-labelledby="displayEditorModal" aria-hidden="true">

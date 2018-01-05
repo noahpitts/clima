@@ -68,13 +68,13 @@ svg {
 
 .geo-graticule {
   fill: none;
-  stroke: #777;
+  stroke: rgb(165, 165, 165);
   stroke-width: 0.5px;
   stroke-opacity: 0.5;
 }
 
 .geo-land {
-  fill: rgb(134, 132, 132);
+  fill: rgb(212, 212, 212);
 }
 
 .geo-boundary {
@@ -85,6 +85,7 @@ svg {
 
 .geo-data {
   fill: rgb(75, 82, 177);
+  stroke: rgb(75, 82, 177);
 }
 
 .geo-sphere {

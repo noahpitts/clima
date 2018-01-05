@@ -1,6 +1,10 @@
 // Global Namespace
 var clima = clima || {};
 clima.utils = clima.utils || {};
+
+clima.worldMap = {};
+clima.worldMap.svg = {};
+
 clima.utils.loader = clima.utils.loader || {};
 clima.utils.parser = clima.utils.parser || {};
 /*
@@ -57,8 +61,10 @@ clima.utils.loader.loadEPW = function (evt) {
                 clima.utils.parser.parseEPW(head, results, clima.utils.onDataLoaded);
             }
         });
+        clima.utils.mapClimateData();
     }
     reader.readAsText(file);
+
 }
 
 // EPW File parser -- TODO: refactor
@@ -118,10 +124,25 @@ clima.utils.parser.parseEPW = function (head, results, callback) {
 
 clima.utils.onDataLoaded = function (dObj) {
     if (!clima.climates) clima.climates = [];
-    clima.currentClimate = dObj;
-    clima.climates.push(dObj);
 
-    // onDataLoaded(clima.climates[0]);
+    var dataExists = false;
+    for (var i = 0; i < clima.climates.length; i++) {
+        var climate = clima.climates[i];
+        if (climate.location.city === dObj.location.city) dataExists = true;
+    }
+
+    if (!dataExists) {
+        clima.currentClimate = dObj;
+        clima.climates.push(dObj);
+        // clima.climates.sort(function (a, b) {
+        //     if (a.location.city < b.location.city) return -1;
+        //     if (a.location.city === b.location.city) return 0;
+        //     if (a.location.city > b.location.city) return 1;
+        // });
+    }
+    else {
+        //TODO: Throw ERROR MSG THAT DATA ALREADY EXISTS
+    }
 }
 
 // EPW File Header Parser
@@ -367,3 +388,33 @@ clima.utils.datetime.seasonTable = [
     { idx: 2, fullname: "Summer", domain: [clima.utils.datetime.summerSolstice, clima.utils.datetime.autumnalEquinox] },
     { idx: 3, fullname: "Autumn", domain: [clima.utils.datetime.autumnalEquinox, clima.utils.datetime.winterSolstice] },
 ]
+
+// Maps the climate data points and generates a formated list for managing climate data
+clima.utils.mapClimateData = function (svg) {
+
+    var climateList = d3.select("#climate-list");
+
+    climateList.selectAll("li")
+        .data(clima.climates)
+        .enter().append("li")
+        .attr("class", "list-group-item")
+        .text(function (d) {
+            return d.location.city + " | "
+                + d.location.country + " | "
+                + d.location.latitude + " | "
+                + d.location.longitude
+        });
+
+    // Add climates to the map
+    clima.worldMap.svg.selectAll("circle")
+        .data(clima.climates)
+        .enter().append("circle")
+        .attr("class", "geo-data")
+        .attr("r", "3")
+        .attr("transform", function (d) {
+            return "translate(" + clima.worldMap.projection([
+                d.location.longitude,
+                d.location.latitude
+            ]) + ")";
+        });
+}
