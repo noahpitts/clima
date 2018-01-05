@@ -1,8 +1,35 @@
-// Tufteplot class
+// ------------------
+// TUFTEPLOT CHART TYPE
+// ------------------
 
+// Namespace
+// ------------------
+var clima = clima || {};
+clima.chart = clima.chart || {};
+clima.chart.tufteplot = clima.chart.tufteplot || {};
+clima.charts = clima.charts || [];
+
+// Chart MetaData
+// ------------------
+// Name of the chart type to be displayed in the controls **Required**
+clima.chart.tufteplot.name = "Tufteplot"
+
+// Util function to create a new Heatmap **Required**
+clima.chart.tufteplot.create = function (data) {
+    return new Tufteplot(data);
+}
+
+// Add this chart to the manifest
+clima.charts.push(clima.chart.tufteplot);
+
+// Tufteplot class
+// ------------------
 class Tufteplot {
 
     constructor(dObj) {
+        // Chart Name
+        this.name = "Tufteplot";
+
         // Board
         this.board = {};
 
@@ -79,8 +106,8 @@ class Tufteplot {
         // Add Main Plot
         this.board.plots = this.board.svg.append("g")
             .attr("class", "tufteplot-plots")
-            .attr("transform", "translate(" + this.boardLeftMargin  + "," + this.boardTopMargin + ")");
-            
+            .attr("transform", "translate(" + this.boardLeftMargin + "," + this.boardTopMargin + ")");
+
         this.drawPlots();
 
         // Add X Axis
@@ -119,7 +146,7 @@ class Tufteplot {
         // Y SCALE
         var col = this.field;
         // var yValueQ3 = function (d) { return d.q3; };
-        
+
         var yScale = d3.scaleLinear()
             .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
             .range([0, this.graphicHeight]);
@@ -131,7 +158,7 @@ class Tufteplot {
         var yMapMean = function (d) { return yScale(d.mean); };
 
         // IQR HEIGHT
-        var hMap = function(d) { return Math.abs(yScale(d.q3) - yScale(d.q1)); };
+        var hMap = function (d) { return Math.abs(yScale(d.q3) - yScale(d.q1)); };
 
 
         // COLOR SCALE
@@ -154,7 +181,7 @@ class Tufteplot {
             .attr("height", function (d) { return hMap(d); }) //*
             // .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
             .attr("fill", d3.rgb(this.color));
-            // .attr("fill", function (d) { return cMap(d); });
+        // .attr("fill", function (d) { return cMap(d); });
 
         // DRAW MEAN RECTS
         this.board.plots.append("g")
@@ -166,7 +193,7 @@ class Tufteplot {
             .attr("y", function (d) { return yMapMean(d); })
             .attr("width", this.graphicWidth / 365) //*
             .attr("height", 0.5) //*
-        // .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
+            // .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
             .attr("fill", d3.rgb('#ffffff'));
 
         // DRAW MAX-MIN CIRC
@@ -216,8 +243,8 @@ class Tufteplot {
     drawYAxis() {
         var col = this.field;
         var yScale = d3.scaleLinear()
-        .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
-        .range([0, this.graphicHeight]);
+            .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
+            .range([0, this.graphicHeight]);
 
         var yAxis = d3.axisLeft()
             .scale(yScale)

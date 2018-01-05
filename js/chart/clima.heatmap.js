@@ -1,9 +1,41 @@
+// ------------------
+// HEATMAP CHART TYPE
+// ------------------
+
+// Namespace
+// ------------------
+var clima = clima || {};
+clima.chart = clima.chart || {};
+clima.chart.heatmap = clima.chart.heatmap || {};
+clima.charts = clima.charts || [];
+
+// Chart MetaData
+// ------------------
+// Name of the chart type to be displayed in the controls **Required**
+clima.chart.heatmap.name = "Heatmap"
+
+// Util function to create a new Heatmap **Required**
+clima.chart.heatmap.create = function (data) {
+    return new Heatmap(data);
+}
+
+// TODO
+// Fields available to be selected by the controls
+// clima.chart.heatmap.fields = [];
+
+
+// Add this chart to the manifest
+clima.charts.push(clima.chart.heatmap);
+
 // Heatmap Class
+// ------------------
 class Heatmap {
 
     // Heatmap constructor
     // Takes in viewport div to draw graphic to
     constructor(data) {
+        // Chart Name
+        this.name = "Heatmap";
 
         // Board
         this.board = {};

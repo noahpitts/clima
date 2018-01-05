@@ -132,29 +132,26 @@ function onDataLoaded(dObj) {
     // console.log("here");
 
     // FOR TESTING
-    clima.testViewport = clima.main.element.append("div");
-    clima.testChart = new Heatmap(dObj);
-    clima.testChart.drawChart(clima.testViewport);
+    // clima.testViewport = clima.main.element.append("div");
+    // clima.testChart = new Heatmap(dObj);
+    // clima.testChart.drawChart(clima.testViewport);
 
-    clima.testViewportTWO = clima.main.element.append("div");
-    clima.testChartTWO = new Tufteplot(dObj);
-    clima.testChartTWO.drawChart(clima.testViewportTWO);
+    // clima.testViewportTWO = clima.main.element.append("div");
+    // clima.testChartTWO = new Tufteplot(dObj);
+    // clima.testChartTWO.drawChart(clima.testViewportTWO);
 
-    clima.testViewportTHREE = clima.main.element.append("div");
-    clima.testChartTHREE = new Scatterplot(dObj);
-    clima.testChartTHREE.drawChart(clima.testViewportTHREE);
+    // clima.testViewportTHREE = clima.main.element.append("div");
+    // clima.testChartTHREE = new Scatterplot(dObj);
+    // clima.testChartTHREE.drawChart(clima.testViewportTHREE);
 
-    clima.testViewportFIVE = clima.main.element.append("div");
-    clima.testChartFIVE = new Psychrometric(dObj);
-    clima.testChartFIVE.drawChart(clima.testViewportFIVE);
+    // clima.testViewportFIVE = clima.main.element.append("div");
+    // clima.testChartFIVE = new Psychrometric(dObj);
+    // clima.testChartFIVE.drawChart(clima.testViewportFIVE);
 
-    // BOXPLOT - TODO
-    clima.testViewportFOUR = clima.main.element.append("div");
-    drawBoxplot(dObj, clima.testViewportFOUR);
-
-
-
-
+    // // BOXPLOT - TODO
+    // clima.testViewportFOUR = clima.main.element.append("div");
+    // drawBoxplot(dObj, clima.testViewportFOUR);
+    
     //initialSetup();
     // var heatmap_view = main_view.append("div")
     // .attr("id", "heatmap-view");

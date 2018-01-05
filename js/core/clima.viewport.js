@@ -9,6 +9,11 @@ clima.viewport.idCounter = clima.viewport.idCounter || 0;
 clima.currentClimate = clima.currentClimate || false;
 clima.defaultClimate = clima.currentClimate;
 
+clima.chart = clima.chart || {};
+
+clima.charts = clima.charts || [];
+clima.defaultChart = clima.charts[0];
+
 // Viewport Class
 class Viewport {
 
@@ -32,7 +37,7 @@ class Viewport {
             this.data = clima.currentClimate;
         }
 
-        // CONSIDER ADDING SVG INNER HTML DIRECTLY HERE TO OPTIMIZE
+        this.chart = clima.defaultChart.create(this.data);
     }
 
     // Draws the Viewport Graphics
@@ -40,16 +45,8 @@ class Viewport {
         // Remove all existing elements in the viewport
         this.element.selectAll("svg").remove();
 
-        // Check that viewport data is still present otherwise
-        if (!this.data) this.data = clima.currentClimate;
-
-        var w = this.element.node().getBoundingClientRect().width
-        // console.log("this is the width: " + w);
-        // drawHeatmap(this.data, this.element);
-
-        var c = new Heatmap(this.data);
-        c.drawChart(this.element);
-
+        // Draw the chart to the viewport
+        this.chart.drawChart(this.element);
     }
 
     // Draws The Editor Controls
@@ -62,6 +59,7 @@ class Viewport {
             .append("div")
             .attr("class", "row");
 
+        // ---------------
         // Data Selection
         // ---------------
         var dataSelect = controls.append("div")
@@ -73,23 +71,31 @@ class Viewport {
         // Add Climate Options
         for (var i = 0; i < clima.climates.length; i++) {
             var climate = clima.climates[i];
-            dataSelect.append("option")
+            var option = dataSelect.append("option")
                 .attr("value", i)
                 .text(climate.location.city + " | " + climate.location.country);
-        }
 
+            // Select the correct initial viewport option
+            if (clima.editor.viewport.data === climate) {
+                option.attr("selected", "selected");
+            }
+        }
         // Add Event Listener
         $(document).ready(function () {
             $("#data-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
+
+                // Update viewport data
                 clima.editor.viewport.data = clima.climates[Number.parseInt(sv)];
+                // Update chart data
+                clima.editor.viewport.chart.data = clima.editor.viewport.data;
+                // Draw new chart
                 clima.editor.viewport.drawChart();
-                //dropDownValue = selectedValue;
-                //onDataLoaded(current_dObj);
             });
         });
 
+        // ---------------
         // Chart Selection
         // ---------------
         var chartSelect = controls.append("div")
@@ -97,6 +103,29 @@ class Viewport {
             .append("select")
             .attr("class", " container custom-select")
             .attr("id", "chart-select");
+        // Add Chart Options
+        for (var i = 0; i < clima.charts.length; i++) {
+            var chart = clima.charts[i];
+            var option = chartSelect.append("option")
+                .attr("value", i)
+                .text(chart.name);
+
+            // Select the correct initial viewport option
+            if (clima.editor.viewport.chart.name === chart.name) {
+                option.attr("selected", "selected");
+            }
+        }
+        // Add Event Listener
+        $(document).ready(function () {
+            $("#chart-select").change(function (evt) {
+                var st = evt.target.options[evt.target.options.selectedIndex];
+                var sv = st.value;
+
+                var newChart = clima.charts[Number.parseInt(sv)];
+                clima.editor.viewport.chart = newChart.create(clima.editor.viewport.data);
+                clima.editor.viewport.drawChart();
+            });
+        });
 
         // Call Chart Class Controls
         this.drawChart();
@@ -116,6 +145,7 @@ class Viewport {
     static sync(vpFrom, vpTo) {
         vpTo.id = vpFrom.id;
         vpTo.data = vpFrom.data;
+        vpTo.chart = vpFrom.chart;
     }
 
     // Draws all viewports passed into static function TODO: TEST
