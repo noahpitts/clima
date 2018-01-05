@@ -148,6 +148,8 @@
         </div>
         <!-- Modal Body -->
         <div class="modal-body">
+          <!-- Map View -->
+          <div class="container" id="world-map-container"></div>
           <div class="container">
             <!-- Load EPW Input -->
             <button type="button" class="btn btn-primary" id="clima-epw-file-button">Load EPW File</button>
@@ -162,6 +164,53 @@
       </div>
     </div>
   </div>
+
+  <!-- Create the world Map -->
+  <script>
+    clima.worldMap = {};
+    clima.worldMap.width = 960;
+    clima.worldMap.height = 540;
+
+    clima.worldMap.svg = d3.select("#world-map-container")
+      .append("svg")
+      .attr("class", "world-map")
+      .attr("width", clima.worldMap.width)
+      .attr("height", clima.worldMap.height)
+      .attr("viewBox", "0 0 " + clima.worldMap.width + " " + clima.worldMap.height)
+      .attr("preserveAspectRatio", "xMidYMid meet");;
+
+    clima.worldMap.projection = d3.geoRobinson()
+      .scale(150)
+      .translate([clima.worldMap.width / 2, clima.worldMap.height / 2])
+      .precision(0.1);
+
+    clima.worldMap.path = d3.geoPath()
+      .projection(clima.worldMap.projection);
+
+    clima.worldMap.svg.append("path")
+      .datum(d3.geoGraticule10())
+      .attr("class", "geo-graticule")
+      .attr("d", clima.worldMap.path);
+
+    clima.worldMap.svg.append("path")
+      .datum({ type: "Sphere" })
+      .attr("class", "geo-sphere")
+      .attr("d", clima.worldMap.path);
+
+    d3.json("./js/data/world.json", function (error, world) {
+      if (error) throw error;
+
+      clima.worldMap.svg.insert("path", ".geo-graticule")
+        .datum(topojson.feature(world, world.objects.land))
+        .attr("class", "geo-land")
+        .attr("d", clima.worldMap.path);
+
+      clima.worldMap.svg.insert("path", ".geo-graticule")
+        .datum(topojson.mesh(world, world.objects.countries, function (a, b) { return a !== b; }))
+        .attr("class", "geo-boundary")
+        .attr("d", clima.worldMap.path);
+    });
+  </script>
 
   <!-- Editor Modal -->
   <div class="modal fade" id="displayEditorModal" tabindex="-1" role="dialog" aria-labelledby="displayEditorModal" aria-hidden="true">
