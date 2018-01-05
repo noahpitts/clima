@@ -104,7 +104,7 @@ clima.applyViewport = function () {
         clima.selectViewport(vp);
     }
 
-    //SYnc Editor Viewport to Selected viewport
+    //Sync Editor Viewport to Selected viewport
     Viewport.sync(clima.editor.viewport, clima.viewport.selection);
 
     clima.viewport.selection.drawChart();

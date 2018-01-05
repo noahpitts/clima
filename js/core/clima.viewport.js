@@ -91,6 +91,7 @@ class Viewport {
         });
 
         // Chart Selection
+        // ---------------
         var chartSelect = controls.append("div")
             .attr("class", "col-sm-5")
             .append("select")
