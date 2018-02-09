@@ -19,8 +19,8 @@ clima.defaultChart = clima.charts[0];
 // Viewport Class
 class Viewport {
 
-    // Viewport constructor : TEST
-    constructor(parent, chart) {
+    // Viewport constructor
+    constructor(parent) {
         // Store link to Parent HTML element
         this.parent = parent;
 
@@ -30,19 +30,19 @@ class Viewport {
         // Create this HTML element
         this.element = parent.append("div")
             .attr("class", "container viewport")
-            .attr("id", "viewport_" + this.id)
-            .on("click", this.select);
+            .attr("id", "viewport_" + this.id);
+        // .on("click", Viewport.selectVP(this));
 
         // Add Viewport Control Bar
         this.controlBar = this.element.append("div")
             .attr("class", "container viewport-control-bar");
 
         // Store reference to viewport climate data and chart
-        this.chart = chart;
-        this.data = chart.data;
+        // this.chart = chart;
+        // this.data = chart.data;
     }
 
-    // Updates the Viewport Graphics : TEST
+    // Updates the Viewport Graphics
     update() {
         // Remove all existing elements in the viewport
         // this.element.selectAll("svg").remove();
@@ -51,7 +51,7 @@ class Viewport {
         this.chart.drawChart(this.element);
     }
 
-    // Draws the control bar in the viewport : TEST
+    // Draws the control bar in the viewport
     drawControlBar() {
         // Add Edit Chart Button to the Viewport Control Bar
         this.editViewportButton = this.controlBar.append("button")
@@ -63,12 +63,12 @@ class Viewport {
             .text("Edit Chart")
             .on("click", this.edit);
 
-        // Add Export Chart Button to the Viewport Control Bar
+        // Add Export SVG Button to the Viewport Control Bar
         this.exportViewportButton = this.controlBar.append("button")
             .attr("id", "export-viewport_" + this.id)
             .attr("type", "button")
             .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
-            .text("Export Chart")
+            .text("Export SVG")
             .on("click", this.export);
 
         // Add Remove Chart Button to the Viewport Control Bar
@@ -80,30 +80,63 @@ class Viewport {
             .on("click", this.remove);
     }
 
-    // Draws the control bar in the viewport : TEST
+    // Removes the control bar in the viewport
     removeControlBar() {
         this.controlBar.selectAll("button").remove();
     }
 
-    // Edit the Viewport : TEST
+    // Edit the Viewport
     edit() {
-        clima.editor.open(this);
+        clima.editor.open(clima.viewport.selection);
     }
 
     // Export the Viewport : TODO
     export() {
         // TODO
-        alert("TODO: Export Viewport")
+
+        // Get The svg node()
+        var node = clima.viewport.selection.element.select("svg").node();
+        // Serialize the Node in to an xml string
+        var svgxml = (new XMLSerializer()).serializeToString(node);
+
+        // Create filename string
+        var filename = "clima_viewport_" + clima.viewport.selection.id + ".svg"
+
+        // if ($.browser.webkit) {
+        //     svgxml = svgxml.replace(/ xlink:xlink/g, ' xmlns:xlink');
+        //     svgxml = svgxml.replace(/ href/g, 'xlink:href');
+        // }
+
+        // Store string as a data Blob
+        var data = new Blob([svgxml], { type: 'text/plain' });
+
+        // Create a file url from the Blob
+        var url = window.URL.createObjectURL(data);
+
+        // Create an anchor element
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.style.visibility = "hidden";
+
+        // Add anchor to the page
+        document.body.appendChild(a);
+        // Click on the anchor
+        a.click();
+
+        // Clean Up
+        setTimeout(function () {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
     }
 
-    // Remove the Viewport : TODO
+    // Remove the Viewport
     remove() {
-        // TODO
-        this.parent.select("#vp_" + this.id).remove();
-        alert("TODO: Remove Viewport");
+        clima.viewport.selection.element.remove();
     }
 
-    // Select this Viewport : TEST
+    // Select this Viewport
     select() {
         // If this viewport is already selected, then deselect it
         if (this === clima.viewport.selection) {
@@ -130,7 +163,7 @@ class Viewport {
 
     // Deselect this Viewport : TEST
     deselect() {
-        this.removeControlButtons();
+        this.removeControlBar();
         this.element.classed("viewport-select", false);
         clima.viewport.selection = false;
     }
@@ -158,15 +191,15 @@ class Editor {
         this.title = d3.select("#editor-title");
         this.editorViewport = d3.select("#editor-viewport");
         this.controlport = d3.select("#editor-controlport");
-        this.chart = clima.chart.default.create;
         this.data = clima.defaultClimate;
+        this.chart = clima.defaultChart.create(this.data);
         this.viewport = false;
     }
 
     // Sets up editing session : TEST
     open(viewport) {
         // If Editing an exiting viewport
-        if (viewport) {
+        if (!viewport) {
             // Use global default chart
             this.data = clima.currentClimate;
             this.chart = clima.defaultChart.create(this.data);
@@ -215,20 +248,20 @@ class Editor {
                 option.attr("selected", "selected");
             }
         }
-        // Add Event Listener
+        // Add Event Listener  : TODO - try to convert to a d3 .on method
         $(document).ready(function () {
             $("#data-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
 
                 // Update editor data
-                this.data = clima.climates[Number.parseInt(sv)];
-                this.chart.data = this.data;
+                clima.editor.data = clima.climates[Number.parseInt(sv)];
+                clima.editor.chart.data = clima.editor.data;
 
                 // Set global current climate
-                climate.currentClimate = this.data;
+                climate.currentClimate = clima.editor.data;
                 // Draw new chart
-                this.update();
+                clima.editor.update();
             });
         });
 
@@ -252,15 +285,16 @@ class Editor {
                 option.attr("selected", "selected");
             }
         }
-        // Add Event Listener
+        // Add Event Listener : TODO - try to convert to a d3 .on method
         $(document).ready(function () {
             $("#chart-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
 
                 var newChart = clima.charts[Number.parseInt(sv)];
-                this.chart = newChart.create(this.data);
-                this.update();
+                clima.editor.chart = newChart.create(clima.editor.data);
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+                clima.editor.update();
             });
         });
 
@@ -269,27 +303,32 @@ class Editor {
     }
 
     // Updates the editor graphic : TEST
-    updateChart() {
+    update() {
         this.chart.drawChart(this.editorViewport);
     }
 
     // Apply the Editor changes to this viewport : TEST
     apply() {
         // If adding a new Viewport
-        if (!this.viewport) {
+        if (!clima.editor.viewport) {
             // Create new viewport object
-            this.viewport = new Viewport(clima.main.element, this.chart);
-            clima.viewports.push(this.viewport);
+            var newViewport = new Viewport(clima.main.element);
+            newViewport.element
+                .on("click", function () {
+                    newViewport.select();
+                });
+            clima.viewports.push(newViewport);
+            clima.editor.viewport = newViewport;
         }
 
         // If editing existing chart
-        else {
-            this.viewport.chart = this.chart;
-            this.viewport.data = this.data;
-        }
+        // else {
+        clima.editor.viewport.chart = clima.editor.chart;
+        clima.editor.viewport.data = clima.editor.data;
+        // }
 
         // Update the viewport graphic
-        this.viewport.update();
+        clima.editor.viewport.update();
     }
 
     // End Editor Class
@@ -300,7 +339,7 @@ class Editor {
 // ----------------------------------------------------------
 
 // Clima.Editor Global : TODO - ADD TO MAIN APP SETUP
-$(document).ready(function () {
-    clima.editor = new Editor();
-});
+// $(document).ready(function () {
+//     clima.editor = new Editor();
+// });
 

@@ -63,28 +63,28 @@ clima.testViewport = 0;
 // --------------------------------------------------------------
 
 // set current viewport selection
-// clima.selectViewport = function (vp) {
-//     // If viewport is already selected, then deselect it
-//     if (clima.viewport.selection && vp === clima.viewport.selection) {
-//         clima.viewport.selection.removeControlButtons();
-//         clima.viewport.selection = false;
-//         d3.selectAll(".viewport").classed("viewport-select", false);
-//     }
-//     // Otherwise select it
-//     else if (vp) {
-//         if (clima.viewport.selection) {
-//             clima.viewport.selection.removeControlButtons();
-//         }
+clima.selectViewport = function (vp) {
+    // If viewport is already selected, then deselect it
+    if (clima.viewport.selection && vp === clima.viewport.selection) {
+        clima.viewport.selection.removeControlButtons();
+        clima.viewport.selection = false;
+        d3.selectAll(".viewport").classed("viewport-select", false);
+    }
+    // Otherwise select it
+    else if (vp) {
+        if (clima.viewport.selection) {
+            clima.viewport.selection.removeControlButtons();
+        }
 
-//         clima.viewport.selection = vp;
-//         clima.viewport.selection.drawControlButtons();
-//         // TODO: Add CSS changes here
-//         d3.selectAll(".viewport").classed("viewport-select", false);
-//         if (vp) {
-//             clima.viewport.selection.element.classed("viewport-select", true);
-//         }
-//     }
-// }
+        clima.viewport.selection = vp;
+        clima.viewport.selection.drawControlButtons();
+        // TODO: Add CSS changes here
+        d3.selectAll(".viewport").classed("viewport-select", false);
+        if (vp) {
+            clima.viewport.selection.element.classed("viewport-select", true);
+        }
+    }
+}
 
 // Opens Viewports editor for adding new Viewport
 // clima.addViewport = function () {
@@ -99,32 +99,34 @@ clima.testViewport = 0;
 // }
 
 // Syncs Editor viewport with main Viewport
-clima.applyViewport = function () {
-    // If adding a new Viewport
-    if (!clima.viewport.selection) {
-        // Create new viewport object
-        var vp = new Viewport(clima.main.element, false);
-        vp.element.on("click", function () {
-            clima.selectViewport(vp);
-        });
+// clima.applyViewport = function () {
+//     // If adding a new Viewport
+//     if (!clima.viewport.selection) {
+//         // Create new viewport object
+//         var vp = new Viewport(clima.main.element, false);
 
-        // Push to Viewport stack
-        clima.main.viewports.push(vp);
+//         vp.element.on("click", function () {
+//             clima.selectViewport(vp);
+//         });
 
-        // Set new viewport as current selection
-        clima.selectViewport(vp);
-    }
+//         // Push to Viewport stack
+//         clima.main.viewports.push(vp);
 
-    //Sync Editor Viewport to Selected viewport
-    Viewport.sync(clima.editor.viewport, clima.viewport.selection);
-    clima.viewport.selection.drawChart();
-}
+//         // Set new viewport as current selection
+//         clima.selectViewport(vp);
+//     }
+
+//     //Sync Editor Viewport to Selected viewport
+//     Viewport.sync(clima.editor.viewport, clima.viewport.selection);
+//     clima.viewport.selection.drawChart();
+// }
 
 
 // MAIN FUNCTION RUN WHEN DEFAULT DATA IS LOADED
 function onDataLoaded(dObj) {
 
-    // clima.main.element = d3.select("#main");
+    clima.main.element = d3.select("#main");
+    clima.editor = new Editor();
 
     // clima.editor.titleElement = d3.select("#editor-title");
     // clima.editor.viewport = d3.select("#editor-viewport");
