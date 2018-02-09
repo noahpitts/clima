@@ -16,7 +16,9 @@ clima.viewports = clima.viewports || [];
 clima.charts = clima.charts || [];
 clima.defaultChart = clima.charts[0];
 
-// Viewport Class
+// ------------------------------------
+// VIEWPORT
+// ------------------------------------
 class Viewport {
 
     // Viewport constructor
@@ -360,13 +362,3 @@ class Editor {
 
     // End Editor Class
 }
-
-
-// TEMP --- MOVE THIS BELOW
-// ----------------------------------------------------------
-
-// Clima.Editor Global : TODO - ADD TO MAIN APP SETUP
-// $(document).ready(function () {
-//     clima.editor = new Editor();
-// });
-
