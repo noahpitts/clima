@@ -134,11 +134,6 @@ clima.utils.onDataLoaded = function (dObj) {
     if (!dataExists) {
         clima.currentClimate = dObj;
         clima.climates.push(dObj);
-        // clima.climates.sort(function (a, b) {
-        //     if (a.location.city < b.location.city) return -1;
-        //     if (a.location.city === b.location.city) return 0;
-        //     if (a.location.city > b.location.city) return 1;
-        // });
     }
     else {
         //TODO: Throw ERROR MSG THAT DATA ALREADY EXISTS

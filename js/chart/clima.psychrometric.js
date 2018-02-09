@@ -1,5 +1,29 @@
-// Psychrometric class
+// ------------------
+// PSYCHROMETRIC CHART TYPE
+// ------------------
 
+// Namespace
+// ------------------
+var clima = clima || {};
+clima.chart = clima.chart || {};
+clima.chart.psychrometric = clima.chart.psychrometric || {};
+clima.charts = clima.charts || [];
+
+// Chart MetaData
+// ------------------
+// Name of the chart type to be displayed in the controls **Required**
+clima.chart.psychrometric.name = "Psychrometric"
+
+// Util function to create a new Heatmap **Required**
+clima.chart.psychrometric.create = function (data) {
+    return new Psychrometric(data);
+}
+
+// Add this chart to the manifest
+clima.charts.push(clima.chart.psychrometric);
+
+// Psychrometric class
+// ------------------
 class Psychrometric {
     constructor(dObj) {
         // Board

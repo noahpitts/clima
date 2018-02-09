@@ -96,17 +96,17 @@
         <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="add-viewport-button" data-target="#displayEditorModal">Add Viewport</button>
         <script>
           $(document).ready(function () {
-            $("#add-viewport-button").click(clima.addViewport);
+            $("#add-viewport-button").click(Viewport.add);
           });
         </script>
 
         <!-- Edit Viewport Button -->
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
+        <!-- <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
         <script>
           $(document).ready(function () {
             $("#edit-display-button").click(clima.editViewport);
           });
-        </script>
+        </script> -->
 
         <!-- Load Climate Button -->
         <button type="button" id="climate-data-button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Climate Data</button>

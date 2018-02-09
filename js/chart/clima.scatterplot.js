@@ -1,5 +1,29 @@
-// Scatterplot class
+// ------------------
+// SCATTERPLOT CHART TYPE
+// ------------------
 
+// Namespace
+// ------------------
+var clima = clima || {};
+clima.chart = clima.chart || {};
+clima.chart.scatterplot = clima.chart.scatterplot || {};
+clima.charts = clima.charts || [];
+
+// Chart MetaData
+// ------------------
+// Name of the chart type to be displayed in the controls **Required**
+clima.chart.scatterplot.name = "Scatterplot"
+
+// Util function to create a new Heatmap **Required**
+clima.chart.scatterplot.create = function (data) {
+    return new Scatterplot(data);
+}
+
+// Add this chart to the manifest
+clima.charts.push(clima.chart.scatterplot);
+
+// Scatterplot class
+// ------------------
 class Scatterplot {
     constructor(dObj) {
         // Board

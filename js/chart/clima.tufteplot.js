@@ -162,7 +162,7 @@ class Tufteplot {
 
 
         // COLOR SCALE
-        // 
+        //
         // var cValue = function (d) { return d.valueOf(col) };
         // var cScale = d3.scaleLinear()
         //     .domain(this.data.metaOf(col).domain)
