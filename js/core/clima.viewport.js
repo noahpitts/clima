@@ -19,8 +19,8 @@ clima.defaultChart = clima.charts[0];
 // Viewport Class
 class Viewport {
 
-    // Viewport constructor
-    constructor(parent, data) {
+    // Viewport constructor : TEST
+    constructor(parent, chart) {
         // Store link to Parent HTML element
         this.parent = parent;
 
@@ -37,25 +37,21 @@ class Viewport {
         this.controlBar = this.element.append("div")
             .attr("class", "container viewport-control-bar");
 
-        // Store link to viewport climate data
-        if (data) {
-            this.data = data;
-        } else {
-            this.data = clima.currentClimate;
-        }
-
-        this.chart = clima.defaultChart.create(this.data);
+        // Store reference to viewport climate data and chart
+        this.chart = chart;
+        this.data = chart.data;
     }
 
-    // Draws the Viewport Graphics
-    drawChart() {
+    // Updates the Viewport Graphics : TEST
+    update() {
         // Remove all existing elements in the viewport
-        this.element.selectAll("svg").remove();
+        // this.element.selectAll("svg").remove();
 
         // Draw the chart to the viewport
         this.chart.drawChart(this.element);
     }
 
+    // Draws the control bar in the viewport : TEST
     drawControlBar() {
         // Add Edit Chart Button to the Viewport Control Bar
         this.editViewportButton = this.controlBar.append("button")
@@ -84,11 +80,12 @@ class Viewport {
             .on("click", this.remove);
     }
 
-    removeControlButtons() {
+    // Draws the control bar in the viewport : TEST
+    removeControlBar() {
         this.controlBar.selectAll("button").remove();
     }
 
-    // Edit the Viewport : TODO
+    // Edit the Viewport : TEST
     edit() {
         clima.editor.open(this);
     }
@@ -106,7 +103,7 @@ class Viewport {
         alert("TODO: Remove Viewport");
     }
 
-    // Select this Viewport
+    // Select this Viewport : TEST
     select() {
         // If this viewport is already selected, then deselect it
         if (this === clima.viewport.selection) {
@@ -131,7 +128,7 @@ class Viewport {
         }
     }
 
-    // Deselect this Viewport
+    // Deselect this Viewport : TEST
     deselect() {
         this.removeControlButtons();
         this.element.classed("viewport-select", false);
@@ -141,20 +138,10 @@ class Viewport {
     // TESTING BELOW HERE
     // ---------------------------------------------
 
-
+    // Add a new viewport
     static add() {
-        // // Remove any viewport selections
-        // clima.selectViewport(false);
-
-        // // Create a new Viewport
-        // newViewport = new Viewport(parent, clima.currentClimate);
-        // // Add to global viewport list
-        // clima.viewports.push(newViewport);
-
-        // // Open Editor
-        // clima.editor.open(newViewport);
+        // Open Editor - false for existing viewport
         clima.editor.open(false);
-
     }
 
     // End Viewport Class
@@ -163,9 +150,6 @@ class Viewport {
 // ------------------------------------
 // EDITOR
 // ------------------------------------
-
-
-// Viewport Editor class
 class Editor {
 
     constructor() {
@@ -175,6 +159,7 @@ class Editor {
         this.editorViewport = d3.select("#editor-viewport");
         this.controlport = d3.select("#editor-controlport");
         this.chart = clima.chart.default.create;
+        this.data = clima.defaultClimate;
         this.viewport = false;
     }
 
@@ -183,21 +168,23 @@ class Editor {
         // If Editing an exiting viewport
         if (viewport) {
             // Use global default chart
-            this.chart = clima.chart.default.create
+            this.data = clima.currentClimate;
+            this.chart = clima.defaultChart.create(this.data);
         }
         // Otherwise inherit from viewport
         else {
+            this.data = viewport.data;
             this.chart = viewport.chart;
         }
         // Set viewport pointer to either passed in viewport or false flag
         this.viewport = viewport;
-        // Draw the Editor Controls (Climate Select, Chart Select)
+        // Draw the Editor Controls (Data Selection, Chart Selection)
         this.drawControls();
         // Draw the Chart
         this.chart.drawChart(this.editorViewport);
     }
 
-    // Draws The Editor Controls : TODO
+    // Draws The Editor Controls : TODO - (set up chart.drawCOntrols)
     drawControls() {
         // Remove all existing elements in the control port
         this.controlport.selectAll("div").remove();
@@ -224,7 +211,7 @@ class Editor {
                 .text(climate.location.city + " | " + climate.location.country);
 
             // Select the correct initial viewport option
-            if (this.chart.data === climate) {
+            if (this.data === climate) {
                 option.attr("selected", "selected");
             }
         }
@@ -234,8 +221,12 @@ class Editor {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
 
-                // Update viewport data
-                this.chart.data = clima.climates[Number.parseInt(sv)];
+                // Update editor data
+                this.data = clima.climates[Number.parseInt(sv)];
+                this.chart.data = this.data;
+
+                // Set global current climate
+                climate.currentClimate = this.data;
                 // Draw new chart
                 this.update();
             });
@@ -257,7 +248,7 @@ class Editor {
                 .text(chart.name);
 
             // Select the correct initial viewport option
-            if (clima.editor.viewport.chart.name === chart.name) {
+            if (this.chart.name === chart.name) {
                 option.attr("selected", "selected");
             }
         }
@@ -268,13 +259,13 @@ class Editor {
                 var sv = st.value;
 
                 var newChart = clima.charts[Number.parseInt(sv)];
-                clima.editor.viewport.chart = newChart.create(clima.editor.viewport.data);
-                clima.editor.viewport.drawChart();
+                this.chart = newChart.create(this.data);
+                this.update();
             });
         });
 
-        // Call Chart Class Controls
-        this.drawChart();
+        // TODO: SET UP CHART DRAW CONTROLS
+        // this.chart.drawControls();
     }
 
     // Updates the editor graphic : TEST
@@ -282,29 +273,31 @@ class Editor {
         this.chart.drawChart(this.editorViewport);
     }
 
-    // Apply the Editor changes to this viewport : TODO
+    // Apply the Editor changes to this viewport : TEST
     apply() {
         // If adding a new Viewport
         if (!this.viewport) {
             // Create new viewport object
-            this.viewport = new Viewport(clima.main.element, this.chart.data);
+            this.viewport = new Viewport(clima.main.element, this.chart);
             clima.viewports.push(this.viewport);
-
         }
 
+        // If editing existing chart
+        else {
+            this.viewport.chart = this.chart;
+            this.viewport.data = this.data;
+        }
 
-
-
-
-
-        this.viewport.chart = this.chart;
+        // Update the viewport graphic
+        this.viewport.update();
     }
+
     // End Editor Class
 }
 
 
-
-
+// TEMP --- MOVE THIS BELOW
+// ----------------------------------------------------------
 
 // Clima.Editor Global : TODO - ADD TO MAIN APP SETUP
 $(document).ready(function () {
