@@ -44,9 +44,6 @@ class Viewport {
 
     // Updates the Viewport Graphics
     update() {
-        // Remove all existing elements in the viewport
-        // this.element.selectAll("svg").remove();
-
         // Draw the chart to the viewport
         this.chart.drawChart(this.element);
     }
@@ -69,7 +66,23 @@ class Viewport {
             .attr("type", "button")
             .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
             .text("Export SVG")
-            .on("click", this.export);
+            .on("click", this.exportSVG);
+
+        // Add Export PNG Button to the Viewport Control Bar
+        this.exportViewportButton = this.controlBar.append("button")
+            .attr("id", "export-viewport_" + this.id)
+            .attr("type", "button")
+            .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
+            .text("Export PNG")
+            .on("click", this.exportPNG);
+
+        // Add Export CSV Button to the Viewport Control Bar
+        this.exportViewportButton = this.controlBar.append("button")
+            .attr("id", "export-viewport_" + this.id)
+            .attr("type", "button")
+            .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
+            .text("Export PNG")
+            .on("click", this.exportCSV);
 
         // Add Remove Chart Button to the Viewport Control Bar
         this.removeViewportButton = this.controlBar.append("button")
@@ -90,8 +103,8 @@ class Viewport {
         clima.editor.open(clima.viewport.selection);
     }
 
-    // Export the Viewport : TODO
-    export() {
+    // Export Viewport as SVG
+    exportSVG() {
         // TODO
 
         // Get The svg node()
@@ -131,9 +144,28 @@ class Viewport {
         }, 0);
     }
 
+    // Export Viewport as PNG : TODO
+    exportPNG() {
+        alert("TODO: develop PNG downloader class");
+    }
+
+    // Export Viewport as CSV : TODO
+    exportCSV() {
+        alert("TODO: develop CSV downloader class");
+    }
+
     // Remove the Viewport
     remove() {
+        // Remove DOM element
         clima.viewport.selection.element.remove();
+
+        // Remove viewport object from global list
+        for (var i = 0; i < clima.viewports.length; i++) {
+            if (clima.viewports[i] === clima.viewport.selection) {
+                clima.viewports.splice(i, 1);
+            }
+        }
+
     }
 
     // Select this Viewport
@@ -161,15 +193,12 @@ class Viewport {
         }
     }
 
-    // Deselect this Viewport : TEST
+    // Deselect this Viewport
     deselect() {
         this.removeControlBar();
         this.element.classed("viewport-select", false);
         clima.viewport.selection = false;
     }
-
-    // TESTING BELOW HERE
-    // ---------------------------------------------
 
     // Add a new viewport
     static add() {
@@ -196,7 +225,7 @@ class Editor {
         this.viewport = false;
     }
 
-    // Sets up editing session : TEST
+    // Sets up editing session
     open(viewport) {
         // If Editing an exiting viewport
         if (!viewport) {
@@ -321,11 +350,9 @@ class Editor {
             clima.editor.viewport = newViewport;
         }
 
-        // If editing existing chart
-        // else {
+        // Sync viewport climate and data members
         clima.editor.viewport.chart = clima.editor.chart;
         clima.editor.viewport.data = clima.editor.data;
-        // }
 
         // Update the viewport graphic
         clima.editor.viewport.update();
