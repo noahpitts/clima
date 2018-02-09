@@ -256,6 +256,10 @@ class Editor {
             .append("div")
             .attr("class", "row");
 
+        // TEST: Make sure that we can clear the chart controls when a new chart is selected
+        this.chartControls = this.controlport.append("div")
+            .attr("class", "container");
+
         // ---------------
         // Data Selection
         // ---------------
@@ -291,6 +295,7 @@ class Editor {
                 climate.currentClimate = clima.editor.data;
                 // Draw new chart
                 clima.editor.update();
+                clima.editor.chart.drawControls(clima.editor.chartControls);
             });
         });
 
@@ -324,19 +329,23 @@ class Editor {
                 clima.editor.chart = newChart.create(clima.editor.data);
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
                 clima.editor.update();
+
+                clima.editor.chart.drawControls(clima.editor.chartControls);
             });
         });
 
         // TODO: SET UP CHART DRAW CONTROLS
-        // this.chart.drawControls();
+
+
+        this.chart.drawControls(clima.editor.chartControls);
     }
 
-    // Updates the editor graphic : TEST
+    // Updates the editor graphic
     update() {
         this.chart.drawChart(this.editorViewport);
     }
 
-    // Apply the Editor changes to this viewport : TEST
+    // Apply the Editor changes to this viewport
     apply() {
         // If adding a new Viewport
         if (!clima.editor.viewport) {

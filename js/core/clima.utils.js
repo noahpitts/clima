@@ -283,25 +283,14 @@ clima.utils.pad = function (n) {
 
 
 
-// Return the units of a given field - TODO: OPTIMIZE
-clima.utils.getFieldUnits = function (key) {
-    for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
-        var field = clima.utils.EPWDataFields[i]
-        if (field.key === key) {
-            return field.units
-        }
-    }
-}
-
 // Return the full name of a given field - TODO: OPTIMIZE
-clima.utils.getFieldName = function (key) {
+clima.utils.getField = function (key) {
     for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
         var field = clima.utils.EPWDataFields[i]
         if (field.key === key) {
-            return field.name
+            return field
         }
     }
-
 }
 
 // EPW Field Metadata

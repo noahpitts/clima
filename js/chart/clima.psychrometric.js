@@ -208,4 +208,13 @@ class Psychrometric {
             .attr("fill", "black");
     }
 
+    // CONTROLS
+    //-------------------------------------------------
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+    }
+
+    // End of the Psychrometric Class
 }

@@ -51,7 +51,7 @@ class Tufteplot {
         // Climate Data and Field
         this.data = dObj;
         this.dataSummary = [] // TODO
-        this.field = "DryBulbTemp";
+        this.field = clima.utils.getField("DryBulbTemp");
 
         this.color = '#1d5fab'; // Default Blue
         this.radius = this.graphicWidth / 365 / 4;
@@ -68,7 +68,7 @@ class Tufteplot {
             var dataHourly = [];
             for (var h = 0; h < 24; h++) {
                 dp = this.data.ticks[d * 24 + h];
-                dataHourly.push(dp.valueOf(this.field));
+                dataHourly.push(dp.valueOf(this.field.key));
             }
 
             this.dataSummary.push({
@@ -144,7 +144,7 @@ class Tufteplot {
         var xMap = function (d, i) { return xScale(xValue(d, i)); };
 
         // Y SCALE
-        var col = this.field;
+        var col = this.field.key;
         // var yValueQ3 = function (d) { return d.q3; };
 
         var yScale = d3.scaleLinear()
@@ -241,7 +241,7 @@ class Tufteplot {
 
     // Draws y-Axis to the yAxis group of the SVG
     drawYAxis() {
-        var col = this.field;
+        var col = this.field.key;
         var yScale = d3.scaleLinear()
             .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
             .range([0, this.graphicHeight]);
@@ -256,7 +256,7 @@ class Tufteplot {
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field;
+        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field.name;
 
         // remove any exiting text
         this.board.title.selectAll("text")
@@ -274,5 +274,56 @@ class Tufteplot {
 
     }
 
+    // CONTROLS
+    //-------------------------------------------------
 
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        // ---------------
+        // Field Selection
+        // ---------------
+        var fieldSelectRow = controlBox.append("div")
+            .attr("class", "row");
+
+        var fieldSelect = fieldSelectRow.append("div")
+            .attr("class", "col-sm-7")
+            .append("select")
+            .attr("class", " container custom-select")
+            .attr("id", "field-select");
+
+        // Add Field Options
+        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+            var field = clima.utils.EPWDataFields[i];
+            var option = fieldSelect.append("option")
+                .attr("value", i)
+                .text(field.name);
+
+            // Select the correct initial viewport option
+            if (this.field.key === field.key) {
+                option.attr("selected", "selected");
+            }
+        }
+        // Add Event Listener
+        $(document).ready(function () {
+            $("#field-select").change(function (evt) {
+                var st = evt.target.options[evt.target.options.selectedIndex];
+                var sv = st.value;
+
+                // Update field data
+                var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.field = field;
+
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+
+        // End of draw controls
+
+    }
+
+    // End of the Tufteplot Class
 }

@@ -47,8 +47,9 @@ class Scatterplot {
         // Climate Data and Field
         this.data = dObj;
         // this.dataSummary = [] // TODO
-        this.fieldX = "DryBulbTemp";
-        this.fieldY = "RelHumid";
+
+        this.fieldX = clima.utils.getField("DryBulbTemp");
+        this.fieldY = clima.utils.getField("RelHumid");
 
         this.color = '#1d5fab'; // Default Blue
         this.radius = this.graphicWidth / 500;
@@ -101,7 +102,7 @@ class Scatterplot {
     // Draws plots to the plot group of the SVG
     drawPoints() {
         // X SCALE
-        var colX = this.fieldX;
+        var colX = this.fieldX.key;
         var xValue = function (d) { return d.valueOf(colX); };
         var xScale = d3.scaleLinear()
             .domain(this.data.metaOf(colX).domain)
@@ -109,7 +110,7 @@ class Scatterplot {
         var xMap = function (d) { return xScale(xValue(d)); };
 
         // Y SCALE
-        var colY = this.fieldY;
+        var colY = this.fieldY.key;
         var yValue = function (d) { return d.valueOf(colY); };
         var yScale = d3.scaleLinear()
             .domain([this.data.metaOf(colY).max, this.data.metaOf(colY).min])
@@ -130,7 +131,7 @@ class Scatterplot {
 
     // Draws x-Axis to the xAxis group of the SVG
     drawXAxis() {
-        var colX = this.fieldX;
+        var colX = this.fieldX.key;
         var xScale = d3.scaleLinear()
             .domain(this.data.metaOf(colX).domain)
             .range([0, this.graphicWidth]);
@@ -144,7 +145,7 @@ class Scatterplot {
 
     // Draws y-Axis to the yAxis group of the SVG
     drawYAxis() {
-        var colY = this.fieldY;
+        var colY = this.fieldY.key;
         var yScale = d3.scaleLinear()
             .domain([this.data.metaOf(colY).max, this.data.metaOf(colY).min - 10])
             .range([0, this.graphicHeight]);
@@ -159,7 +160,7 @@ class Scatterplot {
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field;
+        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.fieldX.name + " x " + this.fieldY.name;
 
         // remove any exiting text
         this.board.title.selectAll("text")
@@ -176,4 +177,83 @@ class Scatterplot {
             .attr("fill", "black");
     }
 
+    // CONTROLS
+    //-------------------------------------------------
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        // ---------------
+        // Field Selection
+        // ---------------
+        var fieldSelectRow = controlBox.append("div")
+            .attr("class", "row");
+
+        var fieldSelectX = fieldSelectRow.append("div")
+            .attr("class", "col-sm-5")
+            .append("select")
+            .attr("class", " container custom-select")
+            .attr("id", "fieldX-select");
+
+        var fieldSelectY = fieldSelectRow.append("div")
+            .attr("class", "col-sm-5")
+            .append("select")
+            .attr("class", " container custom-select")
+            .attr("id", "fieldY-select");
+
+        // Add Field Options
+        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+            var fieldX = clima.utils.EPWDataFields[i];
+            var optionX = fieldSelectX.append("option")
+                .attr("value", i)
+                .text(fieldX.name);
+
+            // Select the correct initial viewport option
+            if (this.fieldX.key === fieldX.key) {
+                optionX.attr("selected", "selected");
+            }
+
+            var fieldY = clima.utils.EPWDataFields[i];
+            var optionY = fieldSelectY.append("option")
+                .attr("value", i)
+                .text(fieldY.name);
+
+            // Select the correct initial viewport option
+            if (this.fieldY.key === fieldY.key) {
+                optionY.attr("selected", "selected");
+            }
+        }
+        // Add Event Listener
+        $(document).ready(function () {
+            $("#fieldX-select").change(function (evt) {
+                var st = evt.target.options[evt.target.options.selectedIndex];
+                var sv = st.value;
+
+                // Update field data
+                var fieldX = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.fieldX = fieldX;
+
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+            $("#fieldY-select").change(function (evt) {
+                var st = evt.target.options[evt.target.options.selectedIndex];
+                var sv = st.value;
+
+                // Update field data
+                var fieldY = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.fieldY = fieldY;
+
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+
+        // End of draw controls
+
+    }
+
+    // End of Scatterplot Class
 }

@@ -55,12 +55,11 @@ class Heatmap {
         this.graphicWidth = (this.boardWidth - this.boardLeftMargin - this.boardRightMargin);
         this.graphicHeight = (this.boardHeight - this.boardTopMargin - this.boardBottomMargin);
 
-
         // VARIABLES
         // ----------------------
         // Climate Data and Field
         this.data = data; // TODO
-        this.field = "DryBulbTemp"; // TODO - make a dictionary lookup
+        this.field = clima.utils.getField("DryBulbTemp");
 
         // Low and High colors for graphics
         this.colorHigh = "#ffff00"; // Deafult Yellow
@@ -130,7 +129,7 @@ class Heatmap {
         var yMap = function (d) { return yScale(yValue(d)); };
 
         // COLOR SCALE
-        var col = this.field;
+        var col = this.field.key;
         var cValue = function (d) { return d.valueOf(col) };
         var cScale = d3.scaleLinear()
             .domain(this.data.metaOf(col).domain)
@@ -189,9 +188,9 @@ class Heatmap {
         var legendXOffset = this.boardRightMargin / 5;
         var legendRectWidth = this.boardRightMargin / 3;
 
-        // Legend Pseudo Data
+        // Legend Data
 
-        var fieldData = this.data.metaOf(this.field);
+        var fieldData = this.data.metaOf(this.field.key);
 
         var legendData = []
         for (var i = 0; i < 24; i++) {
@@ -243,7 +242,7 @@ class Heatmap {
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field;
+        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field.name;
 
         // remove any exiting text
         this.board.title.selectAll("text")
@@ -261,14 +260,60 @@ class Heatmap {
 
     }
 
-    // TODO
-    // Draws the Chart Editor Controls
-    drawControls() {
-        // TODO
+    // EDITOR CONTROLS
+    //-------------------------------------------------
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        // ---------------
+        // Field Selection
+        // ---------------
+        var fieldSelectRow = controlBox.append("div")
+            .attr("class", "row");
+
+        var fieldSelect = fieldSelectRow.append("div")
+            .attr("class", "col-sm-7")
+            .append("select")
+            .attr("class", " container custom-select")
+            .attr("id", "field-select");
+
+        // Add Field Options
+        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+            var field = clima.utils.EPWDataFields[i];
+            var option = fieldSelect.append("option")
+                .attr("value", i)
+                .text(field.name);
+
+            // Select the correct initial viewport option
+            if (this.field.key === field.key) {
+                option.attr("selected", "selected");
+            }
+        }
+        // Add Event Listener
+        $(document).ready(function () {
+            $("#field-select").change(function (evt) {
+                var st = evt.target.options[evt.target.options.selectedIndex];
+                var sv = st.value;
+
+                // Update field data
+                var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.field = field;
+
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+
+        // End of draw controls
     }
 
     // TODO
     updateColor() {
         // TODO
     }
+
+    // End of Heatmap Class
 }
