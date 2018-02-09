@@ -6,11 +6,13 @@
 
 
 ## clima.app.js
-- TODO:  dev python script to build and minify
+- TODO: dev python script to build and minify
 - TODO: rewrite parser and data structure
 
 ## clima.viewport.js
-- TODO - set up chart.drawCOntrols
-- TODO - export viewport as PNG
-- TODO - export viewport as CSV
+- TODO: set up chart.drawCOntrols
+- TODO: export viewport as PNG
+- TODO: export viewport as CSV
 
+# clima.utils.js
+- TODO: Units for Total SKy COver and Opaque Sky Cover

@@ -279,32 +279,125 @@ clima.utils.pad = function (n) {
 }
 
 // EPW Data Fields -- TODO: add Full name
-clima.utils.EPWDataFields = [
-    { key: "EtRadHorz", col: 10 },
-    { key: "EtRadNorm", col: 11 },
-    { key: "GblHorzIrad", col: 13 },
-    { key: "DirNormIrad", col: 14 },
-    { key: "DifHorzIrad", col: 15 },
-    { key: "GblHorzIllum", col: 16 },
-    { key: "DirNormIllum", col: 17 },
-    { key: "DifHorzIllum", col: 18 },
-    { key: "ZenLum", col: 19 },
-    { key: "TotSkyCvr", col: 22 },
-    { key: "OpqSkyCvr", col: 23 },
-    { key: "DryBulbTemp", col: 6 },
-    { key: "DewPtTemp", col: 7 },
-    { key: "RelHumid", col: 8 },
-    { key: "Pressure", col: 9 },
-    { key: "WindDir", col: 20 },
-    { key: "WindSpd", col: 21 },
-    { key: "HorzVis", col: 24 },
-    { key: "CeilHght", col: 25 },
-    { key: "PreciptWater", col: 28 },
-    { key: "AeroDepth", col: 29 },
-    { key: "SnowDepth", col: 30 },
-    { key: "DaysSinceSnow", col: 31 }
-];
+// https://bigladdersoftware.com/epx/docs/8-3/auxiliary-programs/energyplus-weather-file-epw-data-dictionary.html#field-data-source-and-uncertainty-flags
 
+
+
+// Return the units of a given field - TODO: OPTIMIZE
+clima.utils.getFieldUnits = function (key) {
+    for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+        var field = clima.utils.EPWDataFields[i]
+        if (field.key === key) {
+            return field.units
+        }
+    }
+}
+
+// Return the full name of a given field - TODO: OPTIMIZE
+clima.utils.getFieldName = function (key) {
+    for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+        var field = clima.utils.EPWDataFields[i]
+        if (field.key === key) {
+            return field.name
+        }
+    }
+
+}
+
+// EPW Field Metadata
+clima.utils.EPWDataFields = [
+    // Field: Extraterrestrial Horizontal Radiation
+    // This is the Extraterrestrial Horizontal Radiation in Wh/m2. It should have a minimum value of 0; missing value for this field is 9999.
+    { key: "EtRadHorz", units: "Wh/m\u00B2", col: 10, name: "Extraterrestrial Horizontal Radiation", description: "TODO: Add Description" },
+
+    // Field: Extraterrestrial Direct Normal Radiation
+    // This is the Extraterrestrial Direct Normal Radiation in Wh/m2. (Amount of solar radiation in Wh/m2 received on a surface normal to the rays of the sun at the top of the atmosphere during the number of minutes preceding the time indicated). It should have a minimum value of 0; missing value for this field is 9999.
+    { key: "EtRadNorm", units: "Wh/m\u00B2", col: 11, name: "Extraterrestrial Direct Normal Radiation", description: "TODO: Add Description" },
+
+    // Field: Global Horizontal Radiation
+    // This is the Global Horizontal Radiation in Wh/m2. (Total amount of direct and diffuse solar radiation in Wh/m2 received on a horizontal surface during the number of minutes preceding the time indicated.) It should have a minimum value of 0; missing value for this field is 9999.
+    { key: "GblHorzIrad", units: "Wh/m\u00B2", col: 13, name: "Global Horizontal Radiation", description: "TODO: Add Description" },
+
+    // Field: Direct Normal Radiation
+    // This is the Direct Normal Radiation in Wh/m2. (Amount of solar radiation in Wh/m2 received directly from the solar disk on a surface perpendicular to the sun’s rays, during the number of minutes preceding the time indicated.) If the field is “missing ( 9999)” or invalid (<0), it is set to 0. Counts of such missing values are totaled and presented at the end of the runperiod.
+    { key: "DirNormIrad", units: "Wh/m\u00B2", col: 14, name: "Direct Normal Radiation", description: "TODO: Add Description" },
+
+    // Field: Diffuse Horizontal Radiation
+    // This is the Diffuse Horizontal Radiation in Wh/m2. (Amount of solar radiation in Wh/m2 received from the sky (excluding the solar disk) on a horizontal surface during the number of minutes preceding the time indicated.) If the field is “missing ( 9999)” or invalid (<0), it is set to 0. Counts of such missing values are totaled and presented at the end of the runperiod.
+    { key: "DifHorzIrad", units: "Wh/m\u00B2", col: 15, name: "Diffuse Horizontal Radiation", description: "TODO: Add Description" },
+
+    // Field: Global Horizontal Illuminance
+    //This is the Global Horizontal Illuminance in lux. (Average total amount of direct and diffuse illuminance in hundreds of lux received on a horizontal surface during the number of minutes preceding the time indicated.) It should have a minimum value of 0; missing value for this field is 999999 and will be considered missing of >= 999900.
+    { key: "GblHorzIllum", units: "lux", col: 16, name: "Global Horizontal Illuminance", description: "TODO: Add Description" },
+
+    // Field: Direct Normal Illuminance
+    // This is the Direct Normal Illuminance in lux. (Average amount of illuminance in hundreds of lux received directly from the solar disk on a surface perpendicular to the sun’s rays, during the number of minutes preceding the time indicated.) It should have a minimum value of 0; missing value for this field is 999999 and will be considered missing of >= 999900.
+    { key: "DirNormIllum", units: "lux", col: 17, name: "Direct Normal Illuminance", description: "TODO: Add Description" },
+
+    // Field: Diffuse Horizontal Illuminance
+    // This is the Diffuse Horizontal Illuminance in lux. (Average amount of illuminance in hundreds of lux received from the sky (excluding the solar disk) on a horizontal surface during the number of minutes preceding the time indicated.) It should have a minimum value of 0; missing value for this field is 999999 and will be considered missing of >= 999900.
+    { key: "DifHorzIllum", units: "lux", col: 18, name: "Diffuse Horizontal Illuminance", description: "TODO: Add Description" },
+
+    // Field: Zenith Luminance
+    // This is the Zenith Illuminance in Cd/m2. (Average amount of luminance at the sky’s zenith in tens of Cd/m2 during the number of minutes preceding the time indicated.) It should have a minimum value of 0; missing value for this field is 9999.
+    { key: "ZenLum", units: "Cd/m\u00B2", col: 19, name: "Zenith Luminance", description: "TODO: Add Description" },
+
+    // Field: Total Sky Cover
+    // This is the value for total sky cover (tenths of coverage). (i.e. 1 is 1/10 covered. 10 is total coverage). (Amount of sky dome in tenths covered by clouds or obscuring phenomena at the hour indicated at the time indicated.) Minimum value is 0; maximum value is 10; missing value is 99.
+    { key: "TotSkyCvr", units: "TODO: ???", col: 22, name: "Total Sky Cover", description: "TODO: Add Description" },
+
+    // Field: Opaque Sky Cover
+    // This is the value for opaque sky cover (tenths of coverage). (i.e. 1 is 1/10 covered. 10 is total coverage). (Amount of sky dome in tenths covered by clouds or obscuring phenomena that prevent observing the sky or higher cloud layers at the time indicated.) Minimum value is 0; maximum value is 10; missing value is 99.
+    { key: "OpqSkyCvr", units: "TODO: ???", col: 23, name: "Opaque Sky Cover", description: "TODO: Add Description" },
+
+    // Field: Dry Bulb Temperature
+    // This is the dry bulb temperature in C at the time indicated. Note that this is a full numeric field (i.e. 23.6) and not an integer representation with tenths. Valid values range from -70 C to 70 C. Missing value for this field is 99.9.
+    { key: "DryBulbTemp", units: "\u00B0C", col: 6, name: "Dry Bulb Temperature", description: "TODO: Add Description" },
+
+    // Field: Dew Point Temperature
+    // This is the dew point temperature in C at the time indicated. Note that this is a full numeric field (i.e. 23.6) and not an integer representation with tenths. Valid values range from -70 C to 70 C. Missing value for this field is 99.9.
+    { key: "DewPtTemp", units: "\u00B0C", col: 7, name: "Dew Point Temperature", description: "TODO: Add Description" },
+
+    // Field: Relative Humidity
+    // This is the Relative Humidity in percent at the time indicated. Valid values range from 0% to 110%. Missing value for this field is 999.
+    { key: "RelHumid", units: "%", col: 8, name: "Relative Humidity", description: "TODO: Add Description" },
+
+    // Field: Atmospheric Station Pressure
+    // This is the station pressure in Pa at the time indicated. Valid values range from 31,000 to 120,000. (These values were chosen from the “standard barometric pressure” for all elevations of the World). Missing value for this field is 999999.
+    { key: "Pressure", units: "Pa", col: 9, name: "Atmospheric Station Pressure", description: "TODO: Add Description" },
+
+    // Field: Wind Direction
+    // This is the Wind Direction in degrees where the convention is that North=0.0, East=90.0, South=180.0, West=270.0. (Wind direction in degrees at the time indicated. If calm, direction equals zero.) Values can range from 0 to 360. Missing value is 999.
+    { key: "WindDir", units: "\u00B0CW of North", col: 20, name: "Wind Direction", description: "TODO: Add Description" },
+
+    // Field: Wind Speed
+    // This is the wind speed in m/sec. (Wind speed at time indicated.) Values can range from 0 to 40. Missing value is 999.
+    { key: "WindSpd", units: "m/s", col: 21, name: "Wind Speed", description: "TODO: Add Description" },
+
+    // Field: Visibility
+    // This is the value for visibility in km. (Horizontal visibility at the time indicated.) Missing value is 9999.
+    { key: "HorzVis", units: "km", col: 24, name: "Horizontal Visibility", description: "TODO: Add Description" },
+
+    // Field: Ceiling Height
+    // This is the value for ceiling height in m. (77777 is unlimited ceiling height. 88888 is cirroform ceiling.) Missing value is 99999.
+    { key: "CeilHght", units: "m", col: 25, name: "Ceiling Height", description: "TODO: Add Description" },
+
+    // Field: Precipitable Water
+    // This is the value for Precipitable Water in mm. (This is not “rain” - rain is inferred from the PresWeathObs field but a better result is from the Liquid Precipitation Depth field)). Missing value is 999.
+    { key: "PreciptWater", units: "mm", col: 28, name: "Precipitable Water", description: "TODO: Add Description" },
+
+    // Field: Aerosol Optical Depth
+    // This is the value for Aerosol Optical Depth in thousandths. Missing value is .999.
+    { key: "AeroDepth", units: "1/1000", col: 29, name: "Aerosol Optical Depth", description: "TODO: Add Description" },
+
+    // Field: Snow Depth
+    // This is the value for Snow Depth in cm. This field is used to tell when snow is on the ground and, thus, the ground reflectance may change. Missing value is 999.
+    { key: "SnowDepth", units: "cm", col: 30, name: "Snow Depth", description: "TODO: Add Description" },
+
+    // Field: Days Since Last Snowfall
+    // This is the value for Days Since Last Snowfall. Missing value is 99.
+    { key: "DaysSinceSnow", units: "days", col: 31, name: "Days Since Last Snowfall", description: "TODO: Add Description" }
+];
 
 
 
