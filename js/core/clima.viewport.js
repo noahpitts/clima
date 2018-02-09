@@ -107,8 +107,6 @@ class Viewport {
 
     // Export Viewport as SVG
     exportSVG() {
-        // TODO
-
         // Get The svg node()
         var node = clima.viewport.selection.element.select("svg").node();
         // Serialize the Node in to an xml string
@@ -248,7 +246,7 @@ class Editor {
         this.chart.drawChart(this.editorViewport);
     }
 
-    // Draws The Editor Controls : TODO - (set up chart.drawCOntrols)
+    // Draws The Editor Controls
     drawControls() {
         // Remove all existing elements in the control port
         this.controlport.selectAll("div").remove();
@@ -279,7 +277,7 @@ class Editor {
                 option.attr("selected", "selected");
             }
         }
-        // Add Event Listener  : TODO - try to convert to a d3 .on method
+        // Add Event Listener
         $(document).ready(function () {
             $("#data-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
@@ -316,7 +314,7 @@ class Editor {
                 option.attr("selected", "selected");
             }
         }
-        // Add Event Listener : TODO - try to convert to a d3 .on method
+        // Add Event Listener
         $(document).ready(function () {
             $("#chart-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
