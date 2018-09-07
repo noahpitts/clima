@@ -64,6 +64,9 @@ class Heatmap {
         // Low and High colors for graphics
         this.colorHigh = "#ffff00"; // Deafult Yellow
         this.colorLow = '#0000ff'; // Default Blue
+
+        this.defaultTitle = "Heatmap";
+        this.title = this.defaultTitle;
     }
 
     // Draws the D3 chart to the viewport
@@ -242,7 +245,7 @@ class Heatmap {
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field.name;
+        var textData = this.title;
 
         // remove any exiting text
         this.board.title.selectAll("text")
@@ -263,51 +266,192 @@ class Heatmap {
     // EDITOR CONTROLS
     //-------------------------------------------------
 
-    // Draws the chart controls to the control box
-    drawControls(controlBox) {
-        controlBox.selectAll("div").remove();
+    drawTitleControl(controlBox) {
+        var titleControlBox = controlBox.append("div")
+            .attr("class", "row container control-box");
+    
+        // Title Heading
+        titleControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Chart Title");
 
-        // ---------------
-        // Field Selection
-        // ---------------
-        var fieldSelectRow = controlBox.append("div")
-            .attr("class", "row");
+        // Title Field
+        var inputGroup = titleControlBox.append("div").attr("class", "input-group mb-3")
+        
+        inputGroup.append("input")
+            .attr("type", "text")
+            .attr("class", "form-control")
+            .attr("id", "chartTitle")
+            .attr("placeholder", this.title)
+            // .attr("aria-label", this.title)
+            // .attr("aria-describedby", "button-addon2");
 
-        var fieldSelect = fieldSelectRow.append("div")
-            .attr("class", "col-sm-7")
-            .append("select")
-            .attr("class", " container custom-select")
+        var inputGroupAppend = inputGroup.append("div")
+            .attr("class", "input-group-append");
+
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-applyTitle")
+            .text("Apply");
+    
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-resetTitle")
+            .text("Reset");
+
+        $(document).ready(function () {
+            $("#button-applyTitle").click(clima.editor.chart.applyTitle);
+            $("#button-resetTitle").click(clima.editor.chart.resetTitle);
+        });
+    }
+
+    applyTitle () {
+        clima.editor.chart.title = $("#chartTitle").val();
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    resetTitle () {
+        clima.editor.chart.title = clima.editor.chart.defaultTitle;
+        $("#chartTitle").val(clima.editor.chart.title);
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    drawFieldControl(controlBox) {
+        var fieldControlBox = controlBox.append("div")
+            .attr("class", "row control-box");
+
+        var dataField1ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+        
+        var dataField2ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+
+        // Data 1
+        dataField1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Data Field 1");
+
+        var fieldSelect1 = dataField1ControlBox.append("select")
+            .attr("class", "container custom-select")
             .attr("id", "field-select");
 
-        // Add Field Options
+        // Add Field Options 1
         for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
             var field = clima.utils.EPWDataFields[i];
-            var option = fieldSelect.append("option")
+            var option = fieldSelect1.append("option")
                 .attr("value", i)
                 .text(field.name);
-
+        
             // Select the correct initial viewport option
-            if (this.field.key === field.key) {
-                option.attr("selected", "selected");
+                if (this.field.key === field.key) {
+                    option.attr("selected", "selected");
+                }
             }
-        }
-        // Add Event Listener
+        // Add Event Listener 1
         $(document).ready(function () {
             $("#field-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
-
+        
                 // Update field data
                 var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
                 clima.editor.chart.field = field;
-
+        
                 // Draw new chart
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
             });
         });
 
 
-        // End of draw controls
+        // Data 2
+        // dataField2ControlBox.append("div")
+        //     .attr("class", "row")
+        //     .append("h5")
+        //     .attr("class", "container")
+        //     .text("Data Field 2");
+
+        // var fieldSelect2 = dataField2ControlBox.append("select")
+        //     .attr("class", "container custom-select")
+        //     .attr("id", "field-select2");
+
+        // Add data 2 Logic
+    }
+
+    drawColorControl(controlBox) {
+        var colorControlBox = controlBox.append("div")
+        .attr("class", "row control-box");
+
+        var color1ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+    
+        var color2ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+
+        // Color 1 (High Value)
+        color1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("High Value Color");
+
+        color1ControlBox.append("input")
+            .attr("type", "color")
+            .attr("value", this.colorHigh)
+            .attr("class", "container custom-select")
+            .attr("id", "color-select1");
+
+        // Add Event Listener for color 1
+        $(document).ready(function () {
+            $("#color-select1").change(function (evt) {
+                var colorHighVal = $("#color-select1").val();
+                clima.editor.chart.colorHigh = colorHighVal;
+        
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+        // Color 2 (Low Value)
+        color2ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Low Value Color");
+
+        color2ControlBox.append("input")
+            .attr("type", "color")
+            .attr("value", this.colorLow)
+            .attr("class", "container custom-select")
+            .attr("id", "color-select2");
+
+        // Add Event Listener for color 1
+        $(document).ready(function () {
+            $("#color-select2").change(function (evt) {
+                var colorHighVal = $("#color-select2").val();
+                clima.editor.chart.colorLow= colorHighVal;
+        
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+    }
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        this.drawFieldControl(controlBox);
+        this.drawColorControl(controlBox);
+        this.drawTitleControl(controlBox);
+        
+
     }
 
     // TODO

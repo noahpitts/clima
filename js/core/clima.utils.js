@@ -389,7 +389,6 @@ clima.utils.EPWDataFields = [
 ];
 
 
-
 // DATE AND TIME FUNCTIONS -- TODO: Clean up this code
 //
 

@@ -1,3 +1,4 @@
 *.CSV
 *.zip
 *.pdf
+./node_modules
