@@ -41,15 +41,15 @@ class Heatmap {
         this.board = {};
 
         // Board Dims for Unscaled SVG
-        this.boardWidth = 1200;
-        this.boardHeight = 300;
+        this.boardWidth = 1240;
+        this.boardHeight = 310;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
         this.boardTopMargin = 40;
-        this.boardBottomMargin = 50;
-        this.boardLeftMargin = 40;
-        this.boardRightMargin = 80;
+        this.boardBottomMargin = 60;
+        this.boardLeftMargin = 60;
+        this.boardRightMargin = 100;
 
         // Main Graphic Dims
         this.graphicWidth = (this.boardWidth - this.boardLeftMargin - this.boardRightMargin);
@@ -58,15 +58,14 @@ class Heatmap {
         // VARIABLES
         // ----------------------
         // Climate Data and Field
-        this.data = data; // TODO
+        this.data = data; // TODO???
         this.field = clima.utils.getField("DryBulbTemp");
 
         // Low and High colors for graphics
         this.colorHigh = "#ffff00"; // Deafult Yellow
         this.colorLow = '#0000ff'; // Default Blue
 
-        this.defaultTitle = "Heatmap";
-        this.title = this.defaultTitle;
+        this.title = this.name + " of " + this.field.name;
     }
 
     // Draws the D3 chart to the viewport
@@ -171,6 +170,16 @@ class Heatmap {
         // X-Axis Text
         this.board.xAxis.selectAll("text")
             .attr("transform", "translate(" + (this.graphicWidth / 24) + ", -10)");
+
+        // X-Axis Units
+        this.board.xAxis.append("text")
+            .attr("x", this.graphicWidth / 2)
+            .attr("y", 40)
+            .text("Month of the Year")
+            .attr("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "18px")
+            .attr("fill", "black");
     }
 
     // Draws y-Axis to the yAxis group of the SVG
@@ -185,6 +194,17 @@ class Heatmap {
             .tickValues([0, 6, 12, 18, 23]);
 
         this.board.yAxis.call(yAxis);
+
+        // Y-Axis Units
+        this.board.yAxis.append("text")
+            .attr("x", -30)
+            .attr("y", this.graphicHeight / 2)
+            .text("Hour of the Day")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90, -30, " + (this.graphicHeight / 2) + ")")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "18px")
+            .attr("fill", "black");
     }
 
     // Draws the legend to the legend group of the SVG
@@ -242,13 +262,24 @@ class Heatmap {
             .attr("transform", "translate(" + (legendXOffset + legendRectWidth + 6) + ",0)");
 
         this.board.legend.axis.call(yAxis);
+
+        // Y-Axis Units
+        this.board.legend.append("text")
+            .attr("x", 90)
+            .attr("y", this.graphicHeight / 2)
+            .text(this.field.name + " (" + this.field.units + ")")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(90, 90, " + (this.graphicHeight / 2) + ")")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "12px")
+            .attr("fill", "black");
     }
 
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.title;
-
+        
+        
         // remove any exiting text
         this.board.title.selectAll("text")
             .remove();
@@ -257,10 +288,10 @@ class Heatmap {
         this.board.title.append("text")
             .attr("x", this.boardWidth / 2)
             .attr("y", this.boardTopMargin / 2)
-            .text(textData)
+            .text(this.title)
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "20px")
+            .attr("font-size", "24px")
             .attr("fill", "black");
 
     }
@@ -317,7 +348,7 @@ class Heatmap {
     }
 
     resetTitle () {
-        clima.editor.chart.title = clima.editor.chart.defaultTitle;
+        clima.editor.chart.title = clima.editor.chart.name + " of " + clima.editor.chart.field.name + " in " + clima.editor.chart.data.location.city;
         $("#chartTitle").val(clima.editor.chart.title);
         clima.editor.chart.drawChart(clima.editor.editorViewport);
     }

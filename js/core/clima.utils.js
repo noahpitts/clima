@@ -333,11 +333,11 @@ clima.utils.EPWDataFields = [
 
     // Field: Total Sky Cover
     // This is the value for total sky cover (tenths of coverage). (i.e. 1 is 1/10 covered. 10 is total coverage). (Amount of sky dome in tenths covered by clouds or obscuring phenomena at the hour indicated at the time indicated.) Minimum value is 0; maximum value is 10; missing value is 99.
-    { key: "TotSkyCvr", units: "TODO: ???", col: 22, name: "Total Sky Cover", description: "TODO: Add Description" },
+    { key: "TotSkyCvr", units: "tenths of coverage", col: 22, name: "Total Sky Cover", description: "TODO: Add Description" },
 
     // Field: Opaque Sky Cover
     // This is the value for opaque sky cover (tenths of coverage). (i.e. 1 is 1/10 covered. 10 is total coverage). (Amount of sky dome in tenths covered by clouds or obscuring phenomena that prevent observing the sky or higher cloud layers at the time indicated.) Minimum value is 0; maximum value is 10; missing value is 99.
-    { key: "OpqSkyCvr", units: "TODO: ???", col: 23, name: "Opaque Sky Cover", description: "TODO: Add Description" },
+    { key: "OpqSkyCvr", units: "tenths of coverage", col: 23, name: "Opaque Sky Cover", description: "TODO: Add Description" },
 
     // Field: Dry Bulb Temperature
     // This is the dry bulb temperature in C at the time indicated. Note that this is a full numeric field (i.e. 23.6) and not an integer representation with tenths. Valid values range from -70 C to 70 C. Missing value for this field is 99.9.
@@ -387,7 +387,6 @@ clima.utils.EPWDataFields = [
     // This is the value for Days Since Last Snowfall. Missing value is 99.
     { key: "DaysSinceSnow", units: "days", col: 31, name: "Days Since Last Snowfall", description: "TODO: Add Description" }
 ];
-
 
 // DATE AND TIME FUNCTIONS -- TODO: Clean up this code
 //
