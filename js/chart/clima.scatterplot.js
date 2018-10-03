@@ -26,19 +26,21 @@ clima.charts.push(clima.chart.scatterplot);
 // ------------------
 class Scatterplot {
     constructor(dObj) {
+        // Chart Name
+        this.name = "Scatterplot";
         // Board
         this.board = {};
 
         // Board Dims for Unscaled SVG
-        this.boardWidth = 1200;
-        this.boardHeight = 400;
+        this.boardWidth = 1250;
+        this.boardHeight = 410;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
         this.boardTopMargin = 60;
-        this.boardBottomMargin = 50;
-        this.boardLeftMargin = 40;
-        this.boardRightMargin = 80;
+        this.boardBottomMargin = 60;
+        this.boardLeftMargin = 60;
+        this.boardRightMargin = 110;
 
         // Main Graphic Dims
         this.graphicWidth = (this.boardWidth - this.boardLeftMargin - this.boardRightMargin);
@@ -53,6 +55,8 @@ class Scatterplot {
 
         this.color = '#1d5fab'; // Default Blue
         this.radius = this.graphicWidth / 500;
+
+        this.title = this.name + " of " + this.fieldX.name + " by " + this.fieldY.name;
     }
 
     // Draws the D3 chart to the viewport
@@ -141,6 +145,16 @@ class Scatterplot {
             .ticks(10);
 
         this.board.xAxis.call(xAxis);
+
+        // X-Axis Units
+        this.board.xAxis.append("text")
+            .attr("x", this.graphicWidth / 2)
+            .attr("y", 40)
+            .text(this.fieldX.name + " (" + this.fieldX.units + ")")
+            .attr("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "14px")
+            .attr("fill", "black");
     }
 
     // Draws y-Axis to the yAxis group of the SVG
@@ -155,13 +169,21 @@ class Scatterplot {
             .ticks(8);
 
         this.board.yAxis.call(yAxis);
+
+        // Y-Axis Units
+        this.board.yAxis.append("text")
+            .attr("x", -30)
+            .attr("y", this.graphicHeight / 2)
+            .text(this.fieldY.name + " (" + this.fieldY.units + ")")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90, -30, " + (this.graphicHeight / 2) + ")")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "14px")
+            .attr("fill", "black");
     }
 
     // Draws the chart title to the title group of the SVG
     drawTitle() {
-        // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.fieldX.name + " x " + this.fieldY.name;
-
         // remove any exiting text
         this.board.title.selectAll("text")
             .remove();
@@ -170,90 +192,230 @@ class Scatterplot {
         this.board.title.append("text")
             .attr("x", this.boardWidth / 2)
             .attr("y", this.boardTopMargin / 2)
-            .text(textData)
+            .text(this.title)
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "20px")
+            .attr("font-size", "24px")
             .attr("fill", "black");
     }
 
     // CONTROLS
     //-------------------------------------------------
 
-    // Draws the chart controls to the control box
-    drawControls(controlBox) {
-        controlBox.selectAll("div").remove();
+    drawTitleControl(controlBox) {
+        var titleControlBox = controlBox.append("div")
+            .attr("class", "row container control-box");
+    
+        // Title Heading
+        titleControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Chart Title");
 
-        // ---------------
-        // Field Selection
-        // ---------------
-        var fieldSelectRow = controlBox.append("div")
-            .attr("class", "row");
+        // Title Field
+        var inputGroup = titleControlBox.append("div").attr("class", "input-group mb-3")
+        
+        inputGroup.append("input")
+            .attr("type", "text")
+            .attr("class", "form-control")
+            .attr("id", "chartTitle")
+            .attr("placeholder", this.title)
+            // .attr("aria-label", this.title)
+            // .attr("aria-describedby", "button-addon2");
 
-        var fieldSelectX = fieldSelectRow.append("div")
-            .attr("class", "col-sm-5")
-            .append("select")
-            .attr("class", " container custom-select")
-            .attr("id", "fieldX-select");
+        var inputGroupAppend = inputGroup.append("div")
+            .attr("class", "input-group-append");
 
-        var fieldSelectY = fieldSelectRow.append("div")
-            .attr("class", "col-sm-5")
-            .append("select")
-            .attr("class", " container custom-select")
-            .attr("id", "fieldY-select");
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-applyTitle")
+            .text("Apply");
+    
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-resetTitle")
+            .text("Reset");
 
-        // Add Field Options
-        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
-            var fieldX = clima.utils.EPWDataFields[i];
-            var optionX = fieldSelectX.append("option")
-                .attr("value", i)
-                .text(fieldX.name);
-
-            // Select the correct initial viewport option
-            if (this.fieldX.key === fieldX.key) {
-                optionX.attr("selected", "selected");
-            }
-
-            var fieldY = clima.utils.EPWDataFields[i];
-            var optionY = fieldSelectY.append("option")
-                .attr("value", i)
-                .text(fieldY.name);
-
-            // Select the correct initial viewport option
-            if (this.fieldY.key === fieldY.key) {
-                optionY.attr("selected", "selected");
-            }
-        }
-        // Add Event Listener
         $(document).ready(function () {
-            $("#fieldX-select").change(function (evt) {
+            $("#button-applyTitle").click(clima.editor.chart.applyTitle);
+            $("#button-resetTitle").click(clima.editor.chart.resetTitle);
+        });
+    }
+
+    applyTitle () {
+        clima.editor.chart.title = $("#chartTitle").val();
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    resetTitle () {
+        clima.editor.chart.title = clima.editor.chart.name + " of " + clima.editor.chart.fieldX.name + " by " + clima.editor.chart.fieldY.name + " in " + clima.editor.chart.data.location.city;
+        $("#chartTitle").val(clima.editor.chart.title);
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    drawFieldControl(controlBox) {
+        var fieldControlBox = controlBox.append("div")
+            .attr("class", "row control-box");
+
+        var dataField1ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+        
+        var dataField2ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+
+        // Data 1
+        dataField1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Data Field: X-Axis");
+
+        var fieldSelect1 = dataField1ControlBox.append("select")
+            .attr("class", "container custom-select")
+            .attr("id", "field-select");
+
+        // Add Field Options 1
+        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+            var field = clima.utils.EPWDataFields[i];
+            var option = fieldSelect1.append("option")
+                .attr("value", i)
+                .text(field.name);
+        
+            // Select the correct initial viewport option
+                if (this.fieldX.key === field.key) {
+                    option.attr("selected", "selected");
+                }
+            }
+        // Add Event Listener 1
+        $(document).ready(function () {
+            $("#field-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
-
+        
                 // Update field data
-                var fieldX = clima.utils.EPWDataFields[Number.parseInt(sv)];
-                clima.editor.chart.fieldX = fieldX;
-
+                var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.fieldX = field;
+        
                 // Draw new chart
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
+                clima.editor.chart.resetTitle();
             });
-            $("#fieldY-select").change(function (evt) {
+        });
+
+
+        // Data 2
+        dataField2ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Data Field: Y-Axis");
+
+        var fieldSelect2 = dataField2ControlBox.append("select")
+            .attr("class", "container custom-select")
+            .attr("id", "field-select2");
+
+        // Add Field Options 1
+        for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
+            var field = clima.utils.EPWDataFields[i];
+            var option = fieldSelect2.append("option")
+                .attr("value", i)
+                .text(field.name);
+        
+            // Select the correct initial viewport option
+                if (this.fieldY.key === field.key) {
+                    option.attr("selected", "selected");
+                }
+            }
+        // Add Event Listener 1
+        $(document).ready(function () {
+            $("#field-select2").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
-
+        
                 // Update field data
-                var fieldY = clima.utils.EPWDataFields[Number.parseInt(sv)];
-                clima.editor.chart.fieldY = fieldY;
+                var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
+                clima.editor.chart.fieldY = field;
+        
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+                clima.editor.chart.resetTitle();
+            });
+        });
+    }
 
+    drawColorControl(controlBox) {
+        var colorControlBox = controlBox.append("div")
+        .attr("class", "row control-box");
+
+        var color1ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+    
+        var color2ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+
+        // Color 1 (High Value)
+        color1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Color");
+
+        color1ControlBox.append("input")
+            .attr("type", "color")
+            .attr("value", this.color)
+            .attr("class", "container custom-select")
+            .attr("id", "color-select1");
+
+        // Add Event Listener for color 1
+        $(document).ready(function () {
+            $("#color-select1").change(function (evt) {
+                var colorHighVal = $("#color-select1").val();
+                clima.editor.chart.color = colorHighVal;
+        
                 // Draw new chart
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
             });
         });
 
+        // Color 2 (Low Value)
+        // color2ControlBox.append("div")
+        //     .attr("class", "row")
+        //     .append("h5")
+        //     .attr("class", "container")
+        //     .text("Low Value Color");
 
-        // End of draw controls
+        // color2ControlBox.append("input")
+        //     .attr("type", "color")
+        //     .attr("value", this.colorLow)
+        //     .attr("class", "container custom-select")
+        //     .attr("id", "color-select2");
+
+        // // Add Event Listener for color 1
+        // $(document).ready(function () {
+        //     $("#color-select2").change(function (evt) {
+        //         var colorHighVal = $("#color-select2").val();
+        //         clima.editor.chart.colorLow= colorHighVal;
+        
+        //         // Draw new chart
+        //         clima.editor.chart.drawChart(clima.editor.editorViewport);
+        //     });
+        // });
 
     }
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        this.drawFieldControl(controlBox);
+        this.drawColorControl(controlBox);
+        this.drawTitleControl(controlBox);
+
+    }
+
 
     // End of Scatterplot Class
 }

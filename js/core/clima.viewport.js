@@ -312,6 +312,7 @@ class Editor {
                 // Draw new chart
                 clima.editor.update();
                 clima.editor.chart.drawControls(clima.editor.chartControls);
+                clima.editor.chart.resetTitle();
             });
         });
 
@@ -351,6 +352,7 @@ class Editor {
                 clima.editor.update();
 
                 clima.editor.chart.drawControls(clima.editor.chartControls);
+                clima.editor.chart.resetTitle();
             });
         });
 

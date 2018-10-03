@@ -41,7 +41,7 @@ class Heatmap {
         this.board = {};
 
         // Board Dims for Unscaled SVG
-        this.boardWidth = 1240;
+        this.boardWidth = 1250;
         this.boardHeight = 310;
 
         // Margins for Main Graphics
@@ -49,7 +49,7 @@ class Heatmap {
         this.boardTopMargin = 40;
         this.boardBottomMargin = 60;
         this.boardLeftMargin = 60;
-        this.boardRightMargin = 100;
+        this.boardRightMargin = 110;
 
         // Main Graphic Dims
         this.graphicWidth = (this.boardWidth - this.boardLeftMargin - this.boardRightMargin);
@@ -138,6 +138,7 @@ class Heatmap {
             .range([d3.rgb(this.colorLow), d3.rgb(this.colorHigh)]);
         var cMap = function (d) { return cScale(cValue(d)); };
 
+        
         // DRAW PIXELS
         this.board.pixels.selectAll("rect")
             .data(this.data.ticks)
@@ -178,7 +179,7 @@ class Heatmap {
             .text("Month of the Year")
             .attr("text-anchor", "middle")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "18px")
+            .attr("font-size", "14px")
             .attr("fill", "black");
     }
 
@@ -203,7 +204,7 @@ class Heatmap {
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90, -30, " + (this.graphicHeight / 2) + ")")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "18px")
+            .attr("font-size", "14px")
             .attr("fill", "black");
     }
 
@@ -219,7 +220,8 @@ class Heatmap {
 
         var legendData = []
         for (var i = 0; i < 24; i++) {
-            legendData.push(fieldData.min + (i * Math.abs(fieldData.max - fieldData.min) / 24));
+            //legendData.push(fieldData.min + (i * Math.abs(fieldData.max - fieldData.min) / 24));
+            legendData.push(i);
         }
 
         // Y Scale
@@ -255,23 +257,23 @@ class Heatmap {
         // Legend Axis
         var yAxis = d3.axisRight()
             .scale(fScale)
-            .ticks(6)
-            .tickValues([fieldData.min, fieldData.average, fieldData.max]);
+            .ticks(4, ".0f");
+            //.tickValues([fieldData.min, fieldData.average, fieldData.max], );
 
         this.board.legend.axis = this.board.legend.append("g")
             .attr("transform", "translate(" + (legendXOffset + legendRectWidth + 6) + ",0)");
 
         this.board.legend.axis.call(yAxis);
 
-        // Y-Axis Units
+        // Legend Units
         this.board.legend.append("text")
-            .attr("x", 90)
+            .attr("x", 100)
             .attr("y", this.graphicHeight / 2)
             .text(this.field.name + " (" + this.field.units + ")")
             .attr("text-anchor", "middle")
-            .attr("transform", "rotate(90, 90, " + (this.graphicHeight / 2) + ")")
+            .attr("transform", "rotate(90, 100, " + (this.graphicHeight / 2) + ")")
             .attr("font-family", "sans-serif")
-            .attr("font-size", "12px")
+            .attr("font-size", "14px")
             .attr("fill", "black");
     }
 
@@ -368,7 +370,7 @@ class Heatmap {
             .attr("class", "row")
             .append("h5")
             .attr("class", "container")
-            .text("Data Field 1");
+            .text("Data Field");
 
         var fieldSelect1 = dataField1ControlBox.append("select")
             .attr("class", "container custom-select")
@@ -471,6 +473,7 @@ class Heatmap {
         
                 // Draw new chart
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
+                clima.editor.chart.resetTitle();
             });
         });
 
