@@ -53,47 +53,65 @@ class Viewport {
     // Draws the control bar in the viewport
     drawControlBar() {
         // Add Edit Chart Button to the Viewport Control Bar
-        this.editViewportButton = this.controlBar.append("button")
-            .attr("type", "button")
-            .attr("id", "edit-viewport_" + this.id)
-            .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
+        this.editViewportIcon = this.controlBar.append("span")
+            .attr("class", "icon-span")
+            .attr("data-toggle", "tooltip")
+            .attr("data-placement", "top")
+            .attr("title", "Edit Chart")
+            .attr("id", "edit-icon")
+            .append("i")
+            .attr("class", "fas fa-edit icon")
             .attr("data-toggle", "modal")
             .attr("data-target", "#displayEditorModal")
-            .text("Edit")
             .on("click", this.edit);
 
         // Add Export SVG Button to the Viewport Control Bar
-        this.exportViewportButton = this.controlBar.append("button")
-            .attr("id", "export-viewport_" + this.id)
-            .attr("type", "button")
-            .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
-            .text("Export")
+        this.exportViewportIcon = this.controlBar.append("span")
+            .attr("class", "icon-span")
+            .attr("data-toggle", "tooltip")
+            .attr("data-placement", "top")
+            .attr("title", "Download Chart")
+            .attr("id", "download-icon")
+            .append("i")
+            .attr("class", "fas fa-download icon")
             .on("click", this.exportSVG);
 
         // Add Export PNG Button to the Viewport Control Bar
         // TODO
 
         // Add Remove Chart Button to the Viewport Control Bar
-        this.removeViewportButton = this.controlBar.append("button")
-            .attr("id", "remove-viewport_" + this.id)
-            .attr("type", "button")
-            .attr("class", "btn btn-outline-primary btn-sm viewport-control-button")
-            .text("Delete")
+        this.removeViewportIcon = this.controlBar.append("span")
+            .attr("class", "icon-span")
+            .attr("data-toggle", "tooltip")
+            .attr("data-placement", "top")
+            .attr("title", "Delete Chart")
+            .attr("id", "trash-icon")
+            .append("i")
+            .attr("class", "fas fa-trash icon")
             .on("click", this.remove);
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip({delay: { "show": 2000, "hide": 100 }})
+        });
     }
 
     // Removes the control bar in the viewport
     removeControlBar() {
-        this.controlBar.selectAll("button").remove();
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip('hide');
+        });
+        this.controlBar.selectAll("span").remove();
     }
 
     // Edit the Viewport
     edit() {
+        $('#edit-icon').tooltip('hide');
         clima.editor.open(clima.viewport.selection);
     }
 
     // Export Viewport as SVG
     exportSVG() {
+        $('#download-icon').tooltip('hide');
         // Get The svg node()
         var node = clima.viewport.selection.element.select("svg").node();
         // Serialize the Node in to an xml string
@@ -143,6 +161,7 @@ class Viewport {
 
     // Remove the Viewport
     remove() {
+        $('#trash-icon').tooltip('hide');
         // Remove DOM element
         clima.viewport.selection.element.remove();
 

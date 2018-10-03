@@ -51,10 +51,15 @@ class Tufteplot {
         // Climate Data and Field
         this.data = dObj;
         this.dataSummary = [] // TODO
+        this.dataMax = 0;
+        this.dataMin = 0;
         this.field = clima.utils.getField("DryBulbTemp");
 
         this.color = '#1d5fab'; // Default Blue
         this.radius = this.graphicWidth / 365 / 4;
+
+        this.defaultTitle = "Tufteplot";
+        this.title = this.defaultTitle;
     }
 
     summarizeDaily() {
@@ -62,6 +67,9 @@ class Tufteplot {
 
         var dataHourly = [];
         var dp;
+        
+        this.dataMin = this.data.ticks[0].valueOf(this.field.key);
+        this.dataMax = this.dataMin;
 
         // create 2D Array for temp stats
         for (var d = 0; d < 365; d++) {
@@ -69,21 +77,28 @@ class Tufteplot {
             for (var h = 0; h < 24; h++) {
                 dp = this.data.ticks[d * 24 + h];
                 dataHourly.push(dp.valueOf(this.field.key));
+                var dataCheck = dp.valueOf(this.field.key);
+                if (dataCheck < this.dataMin) this.dataMin = dataCheck;
+                if (dataCheck > this.dataMax) this.dataMax = dataCheck;
             }
 
-            this.dataSummary.push({
-                min: d3.min(dataHourly),
-                max: d3.max(dataHourly),
-                mean: d3.mean(dataHourly),
-                q1: d3.quantile(dataHourly, 0.25),
-                q3: d3.quantile(dataHourly, 0.75),
-                span: Math.abs(d3.quantile(dataHourly, 0.75) - d3.quantile(dataHourly, 0.25))
-            });
+            var dataStruct = {};
 
-            // dataDaily.push(dailySummary);
-            // dataHourly = [];
+            dataStruct.min = d3.min(dataHourly);
+            dataStruct.max = d3.max(dataHourly);
+            dataStruct.mean = d3.mean(dataHourly);
+            dataStruct.q1 = d3.quantile(dataHourly, 0.25);
+            dataStruct.q3 = d3.quantile(dataHourly, 0.75);
+            if (dataStruct.q1 > dataStruct.q3) {
+                let temp = dataStruct.q1;
+                dataStruct.q1 = dataStruct.q3;
+                dataStruct.q3 = temp;
+            }
 
-            // return dataDaily;
+            this.dataSummary.push(dataStruct);
+
+            // if (d3.min(dataHourly) > d3.max(dataHourly)) console.log("day: " + d + " min: " + d3.min(dataHourly) + "  max: " + d3.max(dataHourly));
+
         }
     }
 
@@ -146,9 +161,9 @@ class Tufteplot {
         // Y SCALE
         var col = this.field.key;
         // var yValueQ3 = function (d) { return d.q3; };
-
+        var diff = 1.1*(this.dataMax - this.dataMin);
         var yScale = d3.scaleLinear()
-            .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
+            .domain([this.dataMax, this.dataMin])
             .range([0, this.graphicHeight]);
 
         // var gh = this.graphicHeight;
@@ -168,7 +183,11 @@ class Tufteplot {
         //     .domain(this.data.metaOf(col).domain)
         //     .range([d3.rgb(this.colorLow), d3.rgb(this.colorHigh)]);
         // var cMap = function (d) { return cScale(cValue(d)); };
-
+        var textprint = function(d, i) {
+            console.log(
+                "i: " + i + " q3: " + d.q3 + " --> " + yScale(d.q3) + " q1: " + d.q1 + " --> " + yScale(d.q1) + " span: " + hMap(d)
+            );
+        }
         // DRAW Q1 - Q3 RECTS
         this.board.plots.append("g")
             .selectAll("rect")
@@ -178,8 +197,8 @@ class Tufteplot {
             .attr("x", function (d, i) { return xMap(d, i); }) //*
             .attr("y", function (d) { return yMapQ3(d); })
             .attr("width", this.graphicWidth / 365) //*
-            .attr("height", function (d) { return hMap(d); }) //*
-            // .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
+            .attr("height", function (d, i) { return hMap(d); }) //*
+            .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + 0 /*(this.graphicHeight / 24 * -0.5)*/ + ")")
             .attr("fill", d3.rgb(this.color));
         // .attr("fill", function (d) { return cMap(d); });
 
@@ -193,7 +212,7 @@ class Tufteplot {
             .attr("y", function (d) { return yMapMean(d); })
             .attr("width", this.graphicWidth / 365) //*
             .attr("height", 0.5) //*
-            // .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
+            .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + 0 /*(this.graphicHeight / 24 * -0.5)*/ + ")")
             .attr("fill", d3.rgb('#ffffff'));
 
         // DRAW MAX-MIN CIRC
@@ -242,8 +261,9 @@ class Tufteplot {
     // Draws y-Axis to the yAxis group of the SVG
     drawYAxis() {
         var col = this.field.key;
+        var diff = 1.1*(this.dataMax - this.dataMin);
         var yScale = d3.scaleLinear()
-            .domain([this.data.metaOf(col).max + 2, this.data.metaOf(col).min - 2])
+            .domain([this.dataMax, this.dataMin])
             .range([0, this.graphicHeight]);
 
         var yAxis = d3.axisLeft()
@@ -256,8 +276,7 @@ class Tufteplot {
     // Draws the chart title to the title group of the SVG
     drawTitle() {
         // TODO
-        var textData = this.data.location.city + "  |  " + this.data.location.country + "  |  " + this.field.name;
-
+        var textData = this.title;
         // remove any exiting text
         this.board.title.selectAll("text")
             .remove();
@@ -274,54 +293,193 @@ class Tufteplot {
 
     }
 
-    // CONTROLS
+    // EDITOR CONTROLS
     //-------------------------------------------------
 
-    // Draws the chart controls to the control box
-    drawControls(controlBox) {
-        controlBox.selectAll("div").remove();
+    drawTitleControl(controlBox) {
+        var titleControlBox = controlBox.append("div")
+            .attr("class", "row container control-box");
+    
+        // Title Heading
+        titleControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Chart Title");
 
-        // ---------------
-        // Field Selection
-        // ---------------
-        var fieldSelectRow = controlBox.append("div")
-            .attr("class", "row");
+        // Title Field
+        var inputGroup = titleControlBox.append("div").attr("class", "input-group mb-3")
+        
+        inputGroup.append("input")
+            .attr("type", "text")
+            .attr("class", "form-control")
+            .attr("id", "chartTitle")
+            .attr("placeholder", this.title)
+            // .attr("aria-label", this.title)
+            // .attr("aria-describedby", "button-addon2");
 
-        var fieldSelect = fieldSelectRow.append("div")
-            .attr("class", "col-sm-7")
-            .append("select")
-            .attr("class", " container custom-select")
+        var inputGroupAppend = inputGroup.append("div")
+            .attr("class", "input-group-append");
+
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-applyTitle")
+            .text("Apply");
+    
+        inputGroupAppend.append("button")
+            .attr("class", "btn btn-outline-secondary")
+            .attr("type", "button")
+            .attr("id", "button-resetTitle")
+            .text("Reset");
+
+        $(document).ready(function () {
+            $("#button-applyTitle").click(clima.editor.chart.applyTitle);
+            $("#button-resetTitle").click(clima.editor.chart.resetTitle);
+        });
+    }
+
+    applyTitle () {
+        clima.editor.chart.title = $("#chartTitle").val();
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    resetTitle () {
+        clima.editor.chart.title = clima.editor.chart.defaultTitle;
+        $("#chartTitle").val(clima.editor.chart.title);
+        clima.editor.chart.drawChart(clima.editor.editorViewport);
+    }
+
+    drawFieldControl(controlBox) {
+        var fieldControlBox = controlBox.append("div")
+            .attr("class", "row control-box");
+
+        var dataField1ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+        
+        var dataField2ControlBox = fieldControlBox.append("div")
+            .attr("class", "col-sm-6")
+
+        // Data 1
+        dataField1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("Data Field 1");
+
+        var fieldSelect1 = dataField1ControlBox.append("select")
+            .attr("class", "container custom-select")
             .attr("id", "field-select");
 
-        // Add Field Options
+        // Add Field Options 1
         for (var i = 0; i < clima.utils.EPWDataFields.length; i++) {
             var field = clima.utils.EPWDataFields[i];
-            var option = fieldSelect.append("option")
+            var option = fieldSelect1.append("option")
                 .attr("value", i)
                 .text(field.name);
-
+        
             // Select the correct initial viewport option
-            if (this.field.key === field.key) {
-                option.attr("selected", "selected");
+                if (this.field.key === field.key) {
+                    option.attr("selected", "selected");
+                }
             }
-        }
-        // Add Event Listener
+        // Add Event Listener 1
         $(document).ready(function () {
             $("#field-select").change(function (evt) {
                 var st = evt.target.options[evt.target.options.selectedIndex];
                 var sv = st.value;
-
+        
                 // Update field data
                 var field = clima.utils.EPWDataFields[Number.parseInt(sv)];
                 clima.editor.chart.field = field;
-
+        
                 // Draw new chart
                 clima.editor.chart.drawChart(clima.editor.editorViewport);
             });
         });
 
 
-        // End of draw controls
+        // Data 2
+        // dataField2ControlBox.append("div")
+        //     .attr("class", "row")
+        //     .append("h5")
+        //     .attr("class", "container")
+        //     .text("Data Field 2");
+
+        // var fieldSelect2 = dataField2ControlBox.append("select")
+        //     .attr("class", "container custom-select")
+        //     .attr("id", "field-select2");
+
+        // Add data 2 Logic
+    }
+
+    drawColorControl(controlBox) {
+        var colorControlBox = controlBox.append("div")
+        .attr("class", "row control-box");
+
+        var color1ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+    
+        var color2ControlBox = colorControlBox.append("div")
+        .attr("class", "col-sm-6")
+
+        // Color 1 (High Value)
+        color1ControlBox.append("div")
+            .attr("class", "row")
+            .append("h5")
+            .attr("class", "container")
+            .text("High Value Color");
+
+        color1ControlBox.append("input")
+            .attr("type", "color")
+            .attr("value", this.color)
+            .attr("class", "container custom-select")
+            .attr("id", "color-select1");
+
+        // Add Event Listener for color 1
+        $(document).ready(function () {
+            $("#color-select1").change(function (evt) {
+                var colorHighVal = $("#color-select1").val();
+                clima.editor.chart.color = colorHighVal;
+        
+                // Draw new chart
+                clima.editor.chart.drawChart(clima.editor.editorViewport);
+            });
+        });
+
+        // Color 2 (Low Value)
+        // color2ControlBox.append("div")
+        //     .attr("class", "row")
+        //     .append("h5")
+        //     .attr("class", "container")
+        //     .text("Low Value Color");
+
+        // color2ControlBox.append("input")
+        //     .attr("type", "color")
+        //     .attr("value", this.colorLow)
+        //     .attr("class", "container custom-select")
+        //     .attr("id", "color-select2");
+
+        // // Add Event Listener for color 1
+        // $(document).ready(function () {
+        //     $("#color-select2").change(function (evt) {
+        //         var colorHighVal = $("#color-select2").val();
+        //         clima.editor.chart.colorLow= colorHighVal;
+        
+        //         // Draw new chart
+        //         clima.editor.chart.drawChart(clima.editor.editorViewport);
+        //     });
+        // });
+
+    }
+
+    // Draws the chart controls to the control box
+    drawControls(controlBox) {
+        controlBox.selectAll("div").remove();
+
+        this.drawFieldControl(controlBox);
+        this.drawColorControl(controlBox);
+        this.drawTitleControl(controlBox);
 
     }
 

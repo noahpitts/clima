@@ -146,10 +146,12 @@ class Heatmap {
             .attr("class", "heatmap-pixel")
             .attr("x", function (d) { return xMap(d); })
             .attr("y", function (d) { return yMap(d); })
-            .attr("width", this.graphicWidth / 365)
-            .attr("height", this.graphicHeight / 24)
+            .attr("width", this.graphicWidth / 364)
+            .attr("height", this.graphicHeight / 23)
             .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
-            .attr("fill", function (d) { return cMap(d); });
+            .attr("fill", function (d) { return cMap(d); })
+            .append("svg:title")
+            .text(function(d) { return cValue(d); });
     }
 
     // Draws x-Axis to the xAxis group of the SVG

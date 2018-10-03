@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Title -->
-  <title>clima alpha2</title>
+  <title>clima|data|viz</title>
   <meta name="description" content="clima alpha2">
   <meta name="author" content="Noah Pitts">
 
@@ -16,7 +16,8 @@
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/solid.css" integrity="sha384-VGP9aw4WtGH/uPAOseYxZ+Vz/vaTb1ehm1bwx92Fm8dTrE+3boLfF1SpAtB1z7HW" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css" integrity="sha384-1rquJLNOM3ijoueaaeS5m+McXPJCGdr5HcA03/VHXxcp2kX2sUrQDmFc3jR5i/C7" crossorigin="anonymous">
   <!-- CSS -->
   <!-- Bootstrap -->
   <link rel="stylesheet" href="./css/bootstrap.css">
@@ -72,7 +73,7 @@
   <!-- Navbar -->
   <div class="container sticky-top">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand clima-app-title" href="#">clima alpha2</a>
+      <a class="navbar-brand clima-app-title" href="#">clima|data|viz</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -85,32 +86,42 @@
               <span class="sr-only">(current)</span>
             </a>
           </li>
+
           <li class="nav-item">
-            <a class="nav-link" href="https://goo.gl/forms/7QiBAiOUQLB38Vmt1">Report Bug or Feature Request</a>
+            <a class="nav-link" href="#">Documentation</a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">Github</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="https://goo.gl/forms/7QiBAiOUQLB38Vmt1">Report a Bug</a>
+          </li>
+
           <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
           </li> -->
         </ul>
 
         <!-- Add ViewPort Button-->
-        <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="add-viewport-button" data-target="#displayEditorModal">Add Viewport</button>
-        <script>
-          $(document).ready(function () {
-            $("#add-viewport-button").click(Viewport.add);
-          });
-        </script>
-
-        <!-- Edit Viewport Button -->
-        <!-- <button type="button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" id="edit-display-button" data-target="#displayEditorModal">Edit Display</button>
-        <script>
-          $(document).ready(function () {
-            $("#edit-display-button").click(clima.editViewport);
-          });
-        </script> -->
+        <span id="add-viewport-button" class="icon-span-main" data-toggle="tooltip" data-placement="bottom" title="Add New Chart">
+          <i class="fas fa-chart-bar icon" data-toggle="modal" data-target="#displayEditorModal"></i>
+        </span>
+        
 
         <!-- Load Climate Button -->
-        <button type="button" id="climate-data-button" class="btn btn-outline-primary my-2 my-sm-0" data-toggle="modal" data-target="#loadEPWDataModal">Climate Data</button>
+        <span id="climate-data-button" class="icon-span-main" data-toggle="tooltip" data-placement="bottom" title="Climate Data">
+          <i class="fas fa-file-alt icon" data-toggle="modal" data-target="#loadEPWDataModal"></i>
+        </span>
+
+        <script>
+          $(document).ready(function () {
+           $("#add-viewport-button").click(Viewport.add);
+           $("#add-viewport-button").tooltip({delay: { "show": 2000, "hide": 100 }});
+           $("#climate-data-button").tooltip({delay: { "show": 2000, "hide": 100 }});
+          });
+        </script>
       </div>
     </nav>
   </div>
