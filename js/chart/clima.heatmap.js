@@ -42,11 +42,11 @@ class Heatmap {
 
         // Board Dims for Unscaled SVG
         this.boardWidth = 1250;
-        this.boardHeight = 310;
+        this.boardHeight = 320;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
-        this.boardTopMargin = 40;
+        this.boardTopMargin = 60;
         this.boardBottomMargin = 60;
         this.boardLeftMargin = 60;
         this.boardRightMargin = 110;

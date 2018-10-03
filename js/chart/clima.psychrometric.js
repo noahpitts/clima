@@ -30,15 +30,15 @@ class Psychrometric {
         this.board = {};
 
         // Board Dims for Unscaled SVG
-        this.boardWidth = 1200;
-        this.boardHeight = 600;
+        this.boardWidth = 1250;
+        this.boardHeight = 410;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
         this.boardTopMargin = 60;
-        this.boardBottomMargin = 50;
-        this.boardLeftMargin = 40;
-        this.boardRightMargin = 80;
+        this.boardBottomMargin = 60;
+        this.boardLeftMargin = 60;
+        this.boardRightMargin = 110;
 
         // Main Graphic Dims
         this.graphicWidth = (this.boardWidth - this.boardLeftMargin - this.boardRightMargin);
@@ -96,6 +96,17 @@ class Psychrometric {
         this.board.title = this.board.svg.append("g")
             .attr("class", "psychrometric-title");
         this.drawTitle();
+    }
+
+    drawLines() {
+        let minDB = this.data.metaOf("DryBulbTemp").min;
+        let maxDB = this.data.metaOf("DryBulbTemp").min;
+        let rangeDB = [];
+         for (var i = minDB; i < maxDB; i++) {
+             rangeDB.push(i);
+         }
+
+    
     }
 
     // Draws plots to the plot group of the SVG
