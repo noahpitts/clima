@@ -4765,7 +4765,7 @@ button.close {
   margin-left: -3px;
   content: "";
   border-width: 5px 5px 0;
-  border-top-color: gray;
+  border-top-color: #000;
 }
 
 .tooltip.bs-tooltip-right, .tooltip.bs-tooltip-auto[x-placement^="right"] {
@@ -4780,7 +4780,7 @@ button.close {
   margin-top: -3px;
   content: "";
   border-width: 5px 5px 5px 0;
-  border-right-color: gray;
+  border-right-color: #000;
 }
 
 .tooltip.bs-tooltip-bottom, .tooltip.bs-tooltip-auto[x-placement^="bottom"] {
@@ -4795,7 +4795,7 @@ button.close {
   margin-left: -3px;
   content: "";
   border-width: 0 5px 5px;
-  border-bottom-color: gray;
+  border-bottom-color: #000;
 }
 
 .tooltip.bs-tooltip-left, .tooltip.bs-tooltip-auto[x-placement^="left"] {
@@ -4811,7 +4811,7 @@ button.close {
   margin-top: -3px;
   content: "";
   border-width: 5px 0 5px 5px;
-  border-left-color: gray;
+  border-left-color: #000;
 }
 
 .tooltip .arrow::before {
@@ -4825,7 +4825,7 @@ button.close {
   padding: 3px 8px;
   color: #fff;
   text-align: center;
-  background-color: gray;
+  background-color: #000;
   border-radius: 0.25rem;
 }
 
