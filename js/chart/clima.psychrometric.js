@@ -33,7 +33,7 @@ class Psychrometric {
 
         // Board Dims for Unscaled SVG
         this.boardWidth = 1250;
-        this.boardHeight = 410;
+        this.boardHeight = 810;
 
         // Margins for Main Graphics
         // Title, Legend and Scales fall in Margins
@@ -50,17 +50,23 @@ class Psychrometric {
         this.data = dObj;
         // this.dataSummary = [] // TODO
 
-        this.fieldX = "DryBulbTemp";
-        this.fieldY = "RelHumid";
+        this.fieldX = clima.utils.getField("DryBulbTemp");
+        this.fieldY = clima.utils.getField("RelHumid");
 
         this.color = '#1d5fab'; // Default Blue
-        this.radius = this.graphicWidth / 500;
+        this.radius = this.graphicWidth / 350;
 
         this.title = this.name;
+
+        this.minDB;
+        this.maxDB;
     }
 
     // Draws the D3 chart to the viewport
     drawChart(viewport) {
+        this.minDB = this.data.metaOf("DryBulbTemp").min - 2.5;
+        this.maxDB = this.data.metaOf("DryBulbTemp").max + 2.5;
+
         // Remove exisiting graphics from viewport
         viewport.selectAll("svg").remove();
 
@@ -72,6 +78,17 @@ class Psychrometric {
             .attr("height", this.boardHeight)
             .attr("viewBox", "0 0 " + this.boardWidth + " " + this.boardHeight)
             .attr("preserveAspectRatio", "xMidYMid meet");
+
+        // Clipping Plane
+        this.board.clipPath = this.board.svg
+            .append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("x", "0")
+            .attr("y", "0")
+            .attr("width", this.graphicWidth)
+            .attr("height", this.graphicHeight)
+            .attr("transform", "translate(" + this.boardLeftMargin + "," + this.boardTopMargin + ")")
 
         // Add Main Lines
         this.board.lines = this.board.svg.append("g")
@@ -88,13 +105,13 @@ class Psychrometric {
         // Add X Axis
         this.board.xAxis = this.board.svg.append("g")
             .attr("class", "psychrometric-xAxis")
-            .attr("transform", "translate(" + this.boardLeftMargin + "," + (this.graphicHeight * 1.04 + this.boardTopMargin) + ")");
+            .attr("transform", "translate(" + this.boardLeftMargin + "," + (this.graphicHeight + this.boardTopMargin) + ")");
         this.drawXAxis();
 
         // Add Y Axis
         this.board.yAxis = this.board.svg.append("g")
             .attr("class", "psychrometric-yAxis")
-            .attr("transform", "translate(" + (this.boardLeftMargin - 8) + "," + this.boardTopMargin + ")");
+            .attr("transform", "translate(" + (this.boardLeftMargin + this.graphicWidth) + "," + this.boardTopMargin + ")");
         this.drawYAxis();
 
         // // Add Legend
@@ -109,7 +126,7 @@ class Psychrometric {
         this.drawTitle();
     }
 
-    satpress(db) {
+    static satpress(db) {
         // From CBE comfort_tool
         var tKel = db + 273.15,
         C1 = -5674.5359,
@@ -135,23 +152,21 @@ class Psychrometric {
     return pascals;
     }
 
-    humRatio(db, rh) {
+    static humRatio(db, rh) {
         // From CBE comfort_tool
-        let pw = rh * this.satpress(db) / 100;
+        let pw = rh * Psychrometric.satpress(db) / 100;
         return 0.62198 * pw / (101325 - pw);
     }
 
     drawLines() {
-        let minDB = this.data.metaOf("DryBulbTemp").min;
-        let maxDB = this.data.metaOf("DryBulbTemp").max;
 
         let db_scale = d3.scaleLinear()
             .range([0, this.graphicWidth])
-            .domain([minDB, maxDB]);
+            .domain([this.minDB, this.maxDB]);
 
         let hr_scale = d3.scaleLinear()
             .range([0, this.graphicHeight])
-            .domain([0, 30]);
+            .domain([30, 0]);
 
 
         let pline = d3.line()
@@ -165,39 +180,43 @@ class Psychrometric {
 
         // dynamic way of drawing rh lines - from CBE comfort_tool
         for (var i=100; i>=10; i-=10){
-            let RHline = []
-            for (var t = minDB; t <= maxDB; t += 0.5){
-                RHline.push({"db": t, "hr": this.humRatio(t, i)})
+            let RHline = [];
+            for (var t = this.minDB; t <= this.maxDB; t += 0.5){
+                let hr = Psychrometric.humRatio(t, i);
+                // if (hr_scale(1000 * hr) > 30) {
+                    RHline.push({"db": t, "hr": hr});
+                // }
+                
             }
             if (i==100){
                 this.board.lines
                     .append("path")
                     .attr("d", pline(RHline))
                     .attr("class", "rh100")
-                    .attr("stroke", "black");
+                    .attr("stroke", "black")
+                    .attr("clip-path", "url(#clip)")
+                    .attr("fill", "none");
             } else {
                 this.board.lines
                     .append("path")
                     .attr("d", pline(RHline))
                     .attr("class", "rhline")
-                    .attr("stroke", "gray");
+                    .attr("stroke", "gray")
+                    .attr("clip-path", "url(#clip)")
+                    .attr("fill", "none");
             } 
         }
-
-
     }
 
     // Draws plots to the plot group of the SVG
     drawPoints() {
-        let minDB = this.data.metaOf("DryBulbTemp").min;
-        let maxDB = this.data.metaOf("DryBulbTemp").max;
 
         // X SCALE
         let dbValue = function (d) { return d.valueOf("DryBulbTemp"); };
         
         let dbScale = d3.scaleLinear()
             .range([0, this.graphicWidth])
-            .domain([minDB, maxDB]);
+            .domain([this.minDB, this.maxDB]);
 
         let xMap = function (d) { return dbScale(dbValue(d)); };
 
@@ -205,14 +224,23 @@ class Psychrometric {
         let hrValue = function (d) {
             var db = d.valueOf("DryBulbTemp");
             var rh = d.valueOf("RelHumid");
-            return this.humRatio(db, rh);
+            return Psychrometric.humRatio(db, rh);
         };
 
         let hrScale = d3.scaleLinear()
             .range([0, this.graphicHeight])
-            .domain([0, 30]);
+            .domain([30, 0]);
 
-        let yMap = function (d) { return hrScale(hrValue(d)); };
+        let yMap = function (d) { return hrScale(1000 * hrValue(d)); };
+
+        // PopUp String
+        var unitsX = this.fieldX.units;
+        var unitsY = this.fieldY.units;
+        var f = d3.format(".2f");
+        var popup = function(d) {
+            let string = (dbValue(d) + " " + unitsX + "\n" + f(hrValue(d) * 1000) + " g\u02b7/kg\u1d48\u1d43");
+            return string;
+        };
 
         // DRAW POINTS
         this.board.points
@@ -223,48 +251,57 @@ class Psychrometric {
             .attr("cx", function (d) { return xMap(d); })
             .attr("cy", function (d) { return yMap(d); })
             .attr("r", this.radius)
-            .attr("fill", d3.rgb(this.color));
+            .attr("fill", d3.rgb(this.color))
+            .attr("fill-opacity", "0.8")
+            .append("svg:title")
+            .text(function (d) { return popup(d); });
     }
 
     // Draws x-Axis to the xAxis group of the SVG
     drawXAxis() {
-        // var colX = this.fieldX;
-        // var xScale = d3.scaleLinear()
-        //     .domain(this.data.metaOf(colX).domain)
-        //     .range([0, this.graphicWidth]);
+        var xScale = d3.scaleLinear()
+            .domain([this.minDB, this.maxDB])
+            .range([0, this.graphicWidth]);
 
-        // var xAxis = d3.axisBottom()
-        //     .scale(xScale)
-        //     .ticks(10);
+        var xAxis = d3.axisBottom()
+            .scale(xScale)
+            .ticks(10);
 
-        // this.board.xAxis.call(xAxis);
+        this.board.xAxis.call(xAxis);
+
+        // X-Axis Units
+        this.board.xAxis.append("text")
+            .attr("x", this.graphicWidth / 2)
+            .attr("y", 40)
+            .text(this.fieldX.name + " (" + this.fieldX.units + ")")
+            .attr("text-anchor", "middle")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "14px")
+            .attr("fill", "black");
     }
 
     // Draws y-Axis to the yAxis group of the SVG
     drawYAxis() {
-        // var absHum = function (T, D) {
-        //     // ref: https://www.nasa.gov/centers/dryden/pdf/87878main_H-937.pdf
+        let hrScale = d3.scaleLinear()
+            .range([0, this.graphicHeight])
+            .domain([30, 0]);
 
-        //     var a = -4.9283;
-        //     var b = -2937.4;
-        //     var c = 23.5518;
-        //     var d = 273;
-        //     var k = 0.21668;
+        var yAxis = d3.axisRight()
+            .scale(hrScale)
+            .ticks(8);
 
-        //     var H = k * Math.pow((T + d), -1) * Math.pow(10, (c + b) / (D + d)) * Math.pow((D + d), a);
-        //     return H;
-        // }
-        // var maxTdb = this.data.metaOf("DryBulbTemp").max;
-        // var maxDp = this.data.metaOf("DewPtTemp").max;
-        // var yScale = d3.scaleLinear()
-        //     .domain([absHum(maxTdb, maxDp) * 1.2, 0])
-        //     .range([0, this.graphicHeight]);
+        this.board.yAxis.call(yAxis);
 
-        // var yAxis = d3.axisLeft()
-        //     .scale(yScale)
-        //     .ticks(8);
-
-        // this.board.yAxis.call(yAxis);
+        // Y-Axis Units
+        this.board.yAxis.append("text")
+            .attr("x", 30)
+            .attr("y", this.graphicHeight / 2)
+            .text("Humidity Ratio (g\u02b7/kg\u1d48\u1d43)") // TODO: Fix the subscript of the units
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(90, 30, " + (this.graphicHeight / 2) + ")")
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "14px")
+            .attr("fill", "black");
     }
 
     // Draws the chart title to the title group of the SVG

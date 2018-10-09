@@ -121,6 +121,14 @@ class Scatterplot {
             .range([0, this.graphicHeight]);
         var yMap = function (d) { return yScale(yValue(d)); };
 
+        // PopUp String
+        var unitsX = this.fieldX.units;
+        var unitsY = this.fieldY.units;
+        var popup = function(d) {
+            let string = (xValue(d) + " " + unitsX + " | " + yValue(d) + " " + unitsY);
+            return string;
+        };
+
         // DRAW POINTS
         this.board.points
             .selectAll("circle")
@@ -130,7 +138,9 @@ class Scatterplot {
             .attr("cx", function (d) { return xMap(d); })
             .attr("cy", function (d) { return yMap(d); })
             .attr("r", this.radius)
-            .attr("fill", d3.rgb(this.color));
+            .attr("fill", d3.rgb(this.color))
+            .append("svg:title")
+            .text(function (d) { return popup(d); });
     }
 
     // Draws x-Axis to the xAxis group of the SVG

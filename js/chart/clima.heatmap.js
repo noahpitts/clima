@@ -138,6 +138,17 @@ class Heatmap {
             .range([d3.rgb(this.colorLow), d3.rgb(this.colorHigh)]);
         var cMap = function (d) { return cScale(cValue(d)); };
 
+        // var units = this.field.units;
+
+        // PopUp String
+        // var col = this.field.key;
+        // var cValue = function (d) { return d.valueOf(col) };
+        var units = this.field.units;
+        var popup = function(d) {
+            let string = (cValue(d) + " " + units);
+            return string;
+        };
+
         
         // DRAW PIXELS
         this.board.pixels.selectAll("rect")
@@ -151,7 +162,7 @@ class Heatmap {
             .attr("transform", "translate(" + (this.graphicWidth / 365 * -0.5) + "," + (this.graphicHeight / 24 * -0.5) + ")")
             .attr("fill", function (d) { return cMap(d); })
             .append("svg:title")
-            .text(function(d) { return cValue(d); });
+            .text(function (d) { return popup(d); });
     }
 
     // Draws x-Axis to the xAxis group of the SVG
