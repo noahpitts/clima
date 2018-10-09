@@ -499,7 +499,6 @@ class Tufteplot {
         this.drawFieldControl(controlBox);
         this.drawColorControl(controlBox);
         this.drawTitleControl(controlBox);
-
     }
 
     // End of the Tufteplot Class
