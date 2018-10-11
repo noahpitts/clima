@@ -8,7 +8,7 @@
 
   <!-- Title -->
   <title>clima</title>
-  <meta name="description" content="clima alpha2">
+  <meta name="description" content="clima v0.1">
   <meta name="author" content="Noah Pitts">
 
   <!-- Favicon -->
@@ -18,54 +18,15 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro|Source+Sans+Pro" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/solid.css" integrity="sha384-VGP9aw4WtGH/uPAOseYxZ+Vz/vaTb1ehm1bwx92Fm8dTrE+3boLfF1SpAtB1z7HW" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/fontawesome.css" integrity="sha384-1rquJLNOM3ijoueaaeS5m+McXPJCGdr5HcA03/VHXxcp2kX2sUrQDmFc3jR5i/C7" crossorigin="anonymous">
+  
   <!-- CSS -->
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="./css/bootstrap.css">
-
-  <!-- Clima -->
-  <link rel="stylesheet" href="./css/clima.css">
+  <link rel="stylesheet" href="./css/clima.min.css">
 
   <!-- JS -->
-  <!-- jQuery -->
-  <script src="./js/lib/jquery-3.1.1.slim.min.js"></script>
-
-  <!-- Popper -->
-  <script src="./js/lib/popper.min.js"></script>
-
-  <!-- Bootstrap -->
-  <script src="./js/lib/bootstrap.js"></script>
-
-  <!-- D3 -->
-  <script src="./js/lib/d3.js"></script>
-  <script src="./js/lib/projection.js"></script>
-  <script src="./js/lib/topojson.js"></script>
-
-  <!-- PapaParse -->
-  <script src="./js/lib/papaparse.min.js"></script>
-
-  <!-- Clima Data -->
-  <script src="./js/data/clima.oakland.js"></script>
-  <script src="./js/data/world.js"></script>
-
-  <!-- Clima Chart -->
-  <!-- <script src="./js/chart/clima.chart.js"></script> -->
-  <script src="./js/chart/clima.heatmap.js"></script>
-  <script src="./js/chart/clima.tufteplot.js"></script>
-  <script src="./js/chart/clima.scatterplot.js"></script>
-  <script src="./js/chart/clima.sunpath.js"></script>
-  <script src="./js/chart/clima.boxplot.js"></script>
-  <script src="./js/chart/clima.psychrometric.js"></script>
-
-  <!-- Clima Core -->
-  <script src="./js/core/clima.Tick.js"></script>
-  <script src="./js/core/clima.Year.js"></script>
-  <script src="./js/core/clima.utils.js"></script>
-  <script src="./js/core/clima.TimeSpan.js"></script>
-  <script src="./js/core/clima.viewport.js"></script>
-
-  <!-- Clima Main App -->
-  <script src="./js/core/clima.app.js"></script>
-
+  <!-- <script src="./js/lib/jquery-3.1.1.slim.min.js"></script> -->
+  <script src="./js/lib.min.js"></script>
+  <script src="./js/data.min.js"></script>
+  <script src="./js/clima.js"></script>
 </head>
 
 <body>
@@ -87,21 +48,17 @@
             </a>
           </li>
 
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="#">Documentation</a>
-          </li>
+          </li> -->
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Github</a>
+            <a class="nav-link" href="https://github.com/noahpitts/clima">Github</a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" href="https://goo.gl/forms/7QiBAiOUQLB38Vmt1">Report a Bug</a>
           </li>
-
-          <!-- <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li> -->
         </ul>
 
         <!-- Add ViewPort Button-->
@@ -235,7 +192,7 @@
 
         <!-- Header -->
         <div class="modal-header">
-          <h3 class="modal-title" id="editor-title">Viewport Editor</h3>
+          <h3 class="modal-title" id="editor-title">Chart Editor</h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -247,7 +204,7 @@
           <div class="container" id="editor-viewport"></div>
           <!-- Editor controlport -->
           <div class="container" id="editor-controlport">
-            <!-- TODO: Add Editor Controls Here -->
+            <!-- Add Editor Controls Here -->
           </div>
         </div>
 
